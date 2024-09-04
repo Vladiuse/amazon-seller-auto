@@ -1,3 +1,4 @@
+from pprint import pprint
 from time import sleep
 
 from sp_api.api import Reports
@@ -11,15 +12,14 @@ def create_report(marketplace: Marketplaces) -> str:
     report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
     res = Reports(credentials=credentials, marketplace=marketplace)
     data = res.create_report(reportType=report_type)
-    print(data.payload)
+    pprint(data.payload)
     return data.payload.get('reportId')
-
 
 
 def download_report(report_id: str, marketplace: Marketplaces) -> str:
     reports = Reports(credentials=credentials, marketplace=marketplace)
     data = reports.get_report(reportId=report_id)
-
+    pprint(data.payload)
     while data.payload.get('processingStatus') not in [ProcessingStatus.DONE, ProcessingStatus.FATAL,
                                                        ProcessingStatus.CANCELLED]:
         sleep(10)
@@ -30,7 +30,7 @@ def download_report(report_id: str, marketplace: Marketplaces) -> str:
         error_data = str(data.payload)
         raise ReportCreationError(error_data)
     report_data = reports.get_report_document(data.payload['reportDocumentId'])
-    print(report_data.payload)
+    pprint(report_data.payload)
     report_path = f'report_{marketplace.name}.txt'
     with open(report_path, 'w', encoding='iso-8859-1') as file:
         reports.get_report_document(
