@@ -8,6 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 ruff = "^0.3.0"
+pydantic = "^2.8.2"
+pydantic-settings = "^2.4.0"
+requests = "^2.32.3"
+python-amazon-sp-api = "^1.6.25"
 
 
 [build-system]
@@ -27,7 +31,30 @@ select = [
     "F",
     "UP",
     "I",
+    "COM",
+    "ANN",
+    "PL",
+    "RET",
+    "ARG",
+    "SIM",
+    "RSE",
+    "PT",
+    "T20",
+    "PIE",
+    "G",
+    "LOG",
+    "ISC",
+    "C4",
+    "A",
+    "BLE",
 ]
+ignore = [
+    "COM819",
+    "ANN101",
+    "ANN102",
+    "ANN204",
+]
+
 
 [tool.ruff.format]
 quote-style = "double"
