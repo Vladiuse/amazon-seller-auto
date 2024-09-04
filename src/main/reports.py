@@ -1,0 +1,42 @@
+from time import sleep
+
+from sp_api.api import Reports
+from sp_api.base import Marketplaces, ProcessingStatus, ReportType
+
+from src.main.config import credentials
+from src.main.exceptions import ReportCreationError
+
+
+def create_report(marketplace: Marketplaces) -> str:
+    report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
+    res = Reports(credentials=credentials, marketplace=marketplace)
+    data = res.create_report(reportType=report_type)
+    print(data.payload)
+    return data.payload.get('reportId')
+
+
+
+def download_report(report_id: str, marketplace: Marketplaces) -> str:
+    reports = Reports(credentials=credentials, marketplace=marketplace)
+    data = reports.get_report(reportId=report_id)
+
+    while data.payload.get('processingStatus') not in [ProcessingStatus.DONE, ProcessingStatus.FATAL,
+                                                       ProcessingStatus.CANCELLED]:
+        sleep(10)
+        print('Sleeping...')
+        data = reports.get_report(reportId=report_id)
+
+    if data.payload.get('processingStatus') in [ProcessingStatus.FATAL, ProcessingStatus.CANCELLED]:
+        error_data = str(data.payload)
+        raise ReportCreationError(error_data)
+    report_data = reports.get_report_document(data.payload['reportDocumentId'])
+    print(report_data.payload)
+    report_path = f'report_{marketplace.name}.txt'
+    with open(report_path, 'w', encoding='iso-8859-1') as file:
+        reports.get_report_document(
+            report_data.payload.get('reportDocumentId'),
+            download=True,
+            file=file,
+            character_code='iso-8859-1',
+        )
+    return report_path
