@@ -1,0 +1,18 @@
+sku	fnsku	asin	product-name	condition	your-price	mfn-listing-exists	mfn-fulfillable-quantity	afn-listing-exists	afn-warehouse-quantity	afn-fulfillable-quantity	afn-unsellable-quantity	afn-reserved-quantity	afn-total-quantity	per-unit-volume	afn-inbound-working-quantity	afn-inbound-shipped-quantity	afn-inbound-receiving-quantity	afn-researching-quantity	afn-reserved-future-supply	afn-future-supply-buyable	afn-fulfillable-quantity-local	afn-fulfillable-quantity-remote
+00-LEEU-IKQP	B01BVDDLMS	B01BVDDLMS	Palo Selfie Stick Universal Extensible LolaChat (compatible con todos los smartphone color iPhone. Samsung, Android, Windows Phone, ECC)	New	8.99	No		Yes	0	0	0	0	0	295.13	0	0	0	0	0	0	0	0
+7E-PM2V-COV6	B00M2WWW0U	B00M2WWW0U	LolaChat Auriculares con micrófono Fulmine	New	9.99	No		Yes	0	0	0	0	0	1221.33	0	0	0	0	0	0	0	0
+9G-UZFS-SOEP	B00TXBW0VO	B00TXBW0VO	LolaChat Auriculares con micrófono Milly	New	9.99	No		Yes	0	0	0	0	0	1174.62	0	0	0	0	0	0	0	0
+AC-DZLZ-PFE9	B016ZT0SCY	B016ZT0SCY	LolaChat Power Bank	New	9.91	No		Yes	0	0	0	0	0	155.19	0	0	0	0	0	0	0	0
+AS-23WF-U6VX	B0758D2KZ8	B0758D2KZ8	Polonord Adeste - Soporte universal para smartphone y tablet, plegable, de mesa funcional y resistente, compatible con iPhone, Samsung, Android, Tablet y etc	New	5.20	No		Yes	0	0	0	0	0	31.95	0	0	0	0	0	0	0	0
+FD-CVQR-GZPR	B00LSUALB4	B00LSUALB4	LolaChat Auriculares con micrófono Rosina	New	9.99	No		Yes	0	0	0	0	0	1234.27	0	0	0	0	0	0	0	0
+GG-C664-GXWM	B00TXBZ7LE	B00TXBZ7LE	Especial de Halloween: LolaChat Auriculares con micrófono Rock (Miedo, cráneo, Broma)	New	9.99	No		Yes	0	0	0	0	0	359.04	0	0	0	0	0	0	0	0
+JI-LPTC-CLFW	X0009ALXKZ	B00M2WSL6O	LolaChat Auriculares con micrófono Teddy	New	9.99	No		Yes	0	0	0	0	0	1234.27	0	0	0	0	0	0	0	0
+JI-LPTC-CLFW-label	X0009BQ76T	B00LVV34NM	LolaChat Auriculares con micrófono Dentone	New	9.99	No		Yes	0	0	0	0	0	1208.22	0	0	0	0	0	0	0	0
+NQ-MANP-RSBM	B00LSSDR08	B00LSSDR08	LolaChat Auriculares con micrófono Visky	New	9.99	No		Yes	0	0	0	0	0	1208.22	0	0	0	0	0	0	0	0
+QL-97IN-KPDG	B00TXBT102	B00TXBT102	LolaChat Auriculares con micrófono Coccy: Regalo Ideal para Cualquier Chica (Mariquita, roja, Negro)	New	9.99	No		Yes	0	0	0	0	0	1221.33	0	0	0	0	0	0	0	0
+SMICHI2R	X001CYIQC5	B09GFQT6X5	50 mascarillas quirúrgicas desechables de 3 capas tipo IIR resistentes a las salpicaduras y conformes a la norma UNI EN 14683:2019+AC:2019 | BFE >98%	New	7.26	No		Yes	22	0	5	17	22	1886.81	0	0	0	0	0	0	0	0
+SMIFFP2-DR-1	B0BK9Q8G2T	B0BK9Q8G2T	ADESTE - 50 Mascarillas FFP2 Blancas con Certificado CE, cadena controlada, elásticos cómodos, hipoalergénicos y regulables. Seguras: potencia de filtrado BFE >99,5%. Sobres individuales sellados	New	13.60	No		Yes	1	0	1	0	1	3364.76	0	0	0	0	0	0	0	0
+SMIFFP2-HW-1	B0BK9NP2XP	B0BK9NP2XP	ADESTE – 50 Mascarillas FFP2 Blancas con Certificado CE, cadena controlada, elásticos cómodos, hipoalergénicos y regulables. Seguras: potencia de filtrado BFE >99,5%. Sobres individuales sellados	New	11.42	No		Yes	55	0	0	55	686	3795.41	0	574	57	0	0	281	0	0
+SMIFFP2A	X001A82AF7	B08KCWCM7M	CRDLIGHT YY0525 - Mascarilla filtrante FFP2, 5 capas sin válvula en bolsa individual certificada CE 2163 y conforme a la norma UNI EN 149:2001+A1:2009, paquete de 25	New	9.32	No		Yes	0	0	0	0	0	1156.93	0	0	0	0	0	0	0	0
+SMIFFP2A-RL-101	X001BU4PLV	B08XQWVC48	Polonord Adeste 25 Mascarillas FFP2 de 5 capas sin válvula envueltas individualmente con certificación CE 0598 y conformes a la norma UNI EN 149:2001+A1:2009 | BFE en simulación de uso 99,5%	New	12.50	No		Yes	0	0	0	0	0	1865.67	0	0	0	0	0	0	0	0
+YG-HXBD-EM5S	B0759VTQM5	B0759VTQM5	Soporte SmartPhone de mesa a quattro función, excelente regalo Simpatico y utilissimo para Guardare gráfica, ligeros y escuchar música	New	6.85	No		Yes	0	0	0	0	0	31.95	0	0	0	0	0	0	0	0

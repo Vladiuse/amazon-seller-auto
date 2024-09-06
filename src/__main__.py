@@ -1,6 +1,10 @@
+from itertools import product
+
 from sp_api.base import Marketplaces, ReportType
 
-from src.main.reports import create_report, download_report
+from src.adapters.amazon_products_collector import AmazonReportProductsCollector
+from src.adapters.amazon_reports_collector import AmazonReportCollector
+from src.adapters.amazon_report_product_convertor import ReportProductConvertor
 from sp_api.base.exceptions import SellingApiException
 from src.main.exceptions import ReportCreationError
 # GET_FBA_MYI_ALL_INVENTORY_DATA inventory
@@ -31,19 +35,18 @@ ACTIVE_IDS = [
 ]
 
 marketplaces = [
-    # Marketplaces.IT,
-    # Marketplaces.FR,
-    # Marketplaces.ES,
+    Marketplaces.IT,
+    Marketplaces.FR,
+    Marketplaces.ES,
     Marketplaces.DE,
     Marketplaces.GB,
 ]
 report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
 
+products = []
+
 for marketplace in marketplaces:
-    print('Start processing:', marketplace)
-    try:
-        report_id = create_report(marketplace=marketplace, report_type=report_type)
-        download_report(report_id=report_id, marketplace=marketplace)
-    except (SellingApiException, ReportCreationError,) as error:
-        # [{'code': 'QuotaExceeded', 'message': 'You exceeded your quota for the requested resource.', 'details': ''}]
-        print(error)
+    collector = AmazonReportProductsCollector(
+        report_collector=AmazonReportCollector,
+        report_convertor=ReportProductConvertor,
+    )
