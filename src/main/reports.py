@@ -8,8 +8,7 @@ from src.main.config import credentials
 from src.main.exceptions import ReportCreationError
 
 
-def create_report(marketplace: Marketplaces) -> str:
-    report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
+def create_report(marketplace: Marketplaces, report_type: ReportType) -> str:
     res = Reports(credentials=credentials, marketplace=marketplace)
     data = res.create_report(reportType=report_type)
     pprint(data.payload)
@@ -20,6 +19,15 @@ def download_report(report_id: str, marketplace: Marketplaces) -> str:
     reports = Reports(credentials=credentials, marketplace=marketplace)
     data = reports.get_report(reportId=report_id)
     pprint(data.payload)
+    # {'createdTime': '2024-09-06T10:46:51+00:00',
+    #  'dataEndTime': '2024-09-06T10:46:51+00:00',
+    #  'dataStartTime': '2024-09-06T10:46:51+00:00',
+    #  'marketplaceIds': ['A1RKKUPIHCS9HS'],
+    #  'processingStatus': 'IN_QUEUE',
+    #  'reportId': '1142691019972',
+    #  'reportType': 'GET_FBA_MYI_ALL_INVENTORY_DATA'}
+
+    report_type = data.payload.get('reportType')
     while data.payload.get('processingStatus') not in [ProcessingStatus.DONE, ProcessingStatus.FATAL,
                                                        ProcessingStatus.CANCELLED]:
         sleep(10)
@@ -31,7 +39,7 @@ def download_report(report_id: str, marketplace: Marketplaces) -> str:
         raise ReportCreationError(error_data)
     report_data = reports.get_report_document(data.payload['reportDocumentId'])
     pprint(report_data.payload)
-    report_path = f'report_{marketplace.name}.txt'
+    report_path = f'{marketplace.name}_{report_type}.csv'
     with open(report_path, 'w', encoding='iso-8859-1') as file:
         reports.get_report_document(
             report_data.payload.get('reportDocumentId'),
