@@ -78,7 +78,7 @@ class GetAllProductsUseCase(IGetAllProductsUseCase):
 class InReportProductRepository(AmazonProductRepository):
 
     def get_all_products(self) -> list[AmazonProduct]:
-        reports_dir_path = '/home/vlad/PycharmProjects/amazon-seller-auto/media/reports'
+        reports_dir_path = '/media/reports'
         products = []
         for file_name in os.listdir(reports_dir_path):
             path = os.path.join(reports_dir_path, file_name)
