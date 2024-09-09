@@ -4,6 +4,7 @@ from src.application.amazon_product_collector.dto.product import AmazonReportPro
 from src.application.amazon_product_collector.interfaces.amazon_products_collector import IAmazonReportProductsCollector
 from src.application.amazon_product_collector.interfaces.amazon_reports_collector import IAmazonReportCollector
 from src.application.amazon_product_collector.interfaces.report_product_converner import IReportProductConvertor
+from src.application.amazon_product_collector.utils import get_get_by_marketplace_id
 
 
 class AmazonReportProductsCollector(IAmazonReportProductsCollector):
@@ -19,4 +20,8 @@ class AmazonReportProductsCollector(IAmazonReportProductsCollector):
     def collect(self, report_type: ReportType, marketplace: Marketplaces) -> list[AmazonReportProduct]:
         collector = self._report_collector(marketplace=marketplace)
         report_text = collector.create_and_get_report_text(report_type=report_type)
-        return self._report_convertor().convert(report_path=report_text)
+        marketplace_country = get_get_by_marketplace_id(marketplace)
+        return self._report_convertor().convert(
+            report_document_text=report_text,
+            marketplace_country=marketplace_country,
+        )

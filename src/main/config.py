@@ -10,7 +10,6 @@ class Config(BaseSettings):
     LWA_CLIENT_SECRET: str
     LWA_CLIENT_ID: str
     ENV_DISABLE_DONATION_MSG:int
-    AWS_ENV:str
 
 
 config = Config()

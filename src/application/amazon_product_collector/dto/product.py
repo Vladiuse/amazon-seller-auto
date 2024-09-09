@@ -22,6 +22,7 @@ class MarketplaceCountry(str, Enum):
     IT = 'IT'
     DE = 'DE'
     GB = 'GB'
+    UK = 'UK'
     ES = 'ES'
 
 

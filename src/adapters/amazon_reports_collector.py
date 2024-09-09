@@ -44,6 +44,7 @@ class AmazonReportCollector(IAmazonReportCollector):
             if report.is_document_created():
                 return AmazonReport(**data.payload)
             raise ReportStatusError
+        print('report not complete')
         raise ReportDocumentNotComplete
 
     def get_report_document(self, document_id: str) -> ReportDocument:
