@@ -1,2 +1,10 @@
 class ReportCreationError(Exception):
-    """Throw if report status is FATAL or CANCELED"""
+    """throw if report not created"""
+
+
+class ReportDocumentNotComplete(Exception):
+    """Trow if report document status not in []"""
+
+
+class ReportStatusError(Exception):
+    """Throw if report processing status is FATAL or CANCELED"""

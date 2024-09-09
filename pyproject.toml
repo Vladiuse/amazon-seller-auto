@@ -12,6 +12,7 @@ pydantic = "^2.8.2"
 pydantic-settings = "^2.4.0"
 requests = "^2.32.3"
 python-amazon-sp-api = "^1.6.25"
+retry = "^0.9.2"
 
 
 [build-system]
@@ -53,6 +54,9 @@ ignore = [
     "ANN101",
     "ANN102",
     "ANN204",
+
+    "ANN002",
+    "ANN003",
 ]
 
 

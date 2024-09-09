@@ -1,3 +1,4 @@
+from csv import DictWriter
 from itertools import product
 
 from sp_api.base import Marketplaces, ReportType
@@ -7,6 +8,11 @@ from src.adapters.amazon_reports_collector import AmazonReportCollector
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
 from sp_api.base.exceptions import SellingApiException
 from src.main.exceptions import ReportCreationError
+from src.adapters.amazon_products_collector import AmazonReportProductsCollector
+from src.adapters.amazon_reports_collector import AmazonReportCollector
+from src.adapters.amazon_report_product_convertor import ReportProductConvertor
+from src.application.amazon_product_collector.dto.product import AmazonReportProduct
+import csv
 # GET_FBA_MYI_ALL_INVENTORY_DATA inventory
 # GET_REFERRAL_FEE_PREVIEW_REPORT 403 forbined
 # GET_FBA_STORAGE_FEE_CHARGES_DATA calceled
@@ -44,9 +50,21 @@ marketplaces = [
 report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
 
 products = []
+collector = AmazonReportProductsCollector(
+    report_collector= AmazonReportCollector,
+    report_convertor= ReportProductConvertor,
+)
+# for marketplace in marketplaces:
+#     print(marketplace)
+#     report_products = collector.collect(report_type=report_type, marketplace=marketplace)
+#     products.extend(report_products)
+#
+# with open('x.csv', 'w') as file:
+#     fieldnames = list[AmazonReportProduct.model_fields]
+#     writer = DictWriter(file, delimiter=',', quotechar='"', fieldnames=fieldnames)
+#     writer.writeheader()
+#     for i in products:
+#         writer.writerow(i.model_dump())
 
-for marketplace in marketplaces:
-    collector = AmazonReportProductsCollector(
-        report_collector=AmazonReportCollector,
-        report_convertor=ReportProductConvertor,
-    )
+collector = AmazonReportCollector(marketplace=Marketplaces.IT)
+collector.get_report(report_id='1147563019975')

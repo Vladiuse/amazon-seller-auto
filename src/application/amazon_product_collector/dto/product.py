@@ -1,6 +1,20 @@
 from enum import Enum
 
 from pydantic import BaseModel, Field
+from sp_api.base import Marketplaces, ReportType
+
+
+
+
+class AmazonDocument(BaseModel):
+    id: str
+
+
+class AmazonReport(BaseModel):
+    id:str|None = None
+    marketplace: Marketplaces
+    type:ReportType
+    document: AmazonDocument
 
 
 class MarketplaceCountry(str, Enum):
@@ -25,3 +39,6 @@ class AmazonReportProduct(BaseModel):
     inbound_receiving_qty: int = Field(alias='afn-inbound-receiving-quantity')
     rating: float | None = None
     rating_reviews: int | None = None
+
+
+
