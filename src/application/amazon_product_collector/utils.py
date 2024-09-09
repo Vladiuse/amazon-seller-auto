@@ -8,7 +8,6 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
     def decorator(func):
         def wrapper(*args, **kwargs):
             for _ in range(attempts):
-                print(_)
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:

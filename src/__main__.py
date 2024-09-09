@@ -3,6 +3,7 @@ from itertools import product
 
 from sp_api.base import Marketplaces, ReportType
 
+
 from src.adapters.amazon_products_collector import AmazonReportProductsCollector
 from src.adapters.amazon_reports_collector import AmazonReportCollector
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
@@ -50,10 +51,10 @@ marketplaces = [
 report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
 
 products = []
-collector = AmazonReportProductsCollector(
-    report_collector= AmazonReportCollector,
-    report_convertor= ReportProductConvertor,
-)
+# collector = AmazonReportProductsCollector(
+#     report_collector= AmazonReportCollector,
+#     report_convertor= ReportProductConvertor,
+# )
 # for marketplace in marketplaces:
 #     print(marketplace)
 #     report_products = collector.collect(report_type=report_type, marketplace=marketplace)
@@ -66,5 +67,13 @@ collector = AmazonReportProductsCollector(
 #     for i in products:
 #         writer.writerow(i.model_dump())
 
-collector = AmazonReportCollector(marketplace=Marketplaces.IT)
-collector.get_report(report_id='1147563019975')
+# collector = AmazonReportCollector(marketplace=Marketplaces.IT)
+# collector.get_report(report_id='1147563019975')
+from src.application.amazon_product_collector.utils import retry
+@retry(
+
+)
+def test():
+    print('test')
+
+test()
