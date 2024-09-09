@@ -74,3 +74,8 @@ class AmazonReportCollector(IAmazonReportCollector):
         report = self.get_report(report_id=report_id)
         report_document = self.get_report_document(document_id=report.document_id)
         return self.get_report_document_text(report_document.url)
+
+    # TODO тут я выполняю цезочку запросов, дейстивой чтоб создать отчет
+    # в этом классе норм это расположить или в какой другой вынести?
+    # и теоретически может возникнуть ситуация что report не создаться или создаться с
+    # статусом Fail на всех попытках - я не понимаю что в таком случае делать.
