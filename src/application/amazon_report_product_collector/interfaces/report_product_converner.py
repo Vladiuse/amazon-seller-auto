@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sp_api.base import Marketplaces
 
-from src.application.amazon_product_collector.dto.product import AmazonReportProduct
+from src.application.amazon_report_product_collector.dto.product import AmazonReportProduct
 
 
 class IReportProductConvertor(ABC):

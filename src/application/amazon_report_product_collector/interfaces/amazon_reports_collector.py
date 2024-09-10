@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sp_api.base import ReportType
 
-from src.application.amazon_product_collector.dto.report import AmazonReport, ReportDocument
+from src.application.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
 
 
 class IAmazonReportCollector(ABC):
