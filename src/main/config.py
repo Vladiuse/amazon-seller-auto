@@ -9,10 +9,16 @@ class Config(BaseSettings):
     LWA_APP_ID: str
     LWA_CLIENT_SECRET: str
     LWA_CLIENT_ID: str
-    ENV_DISABLE_DONATION_MSG:int
+    ENV_DISABLE_DONATION_MSG: int
+
+
+class AirTableConfig(BaseSettings):
+    AIRTABLE_API_KEY: str
+    AIRTABLE_APP_ID: str
 
 
 config = Config()
+airtable_config = AirTableConfig()
 
 credentials = {
     'refresh_token': config.SP_API_REFRESH_TOKEN,

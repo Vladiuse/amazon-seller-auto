@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from sp_api.base import Marketplaces, ReportType
 
 
@@ -30,6 +30,7 @@ asin = str
 
 
 class AmazonReportProduct(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     asin: asin
     name: str = Field(alias='product-name')
     marketplace_country: MarketplaceCountry
