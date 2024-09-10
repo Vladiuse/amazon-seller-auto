@@ -1,3 +1,4 @@
+import logging
 from csv import DictWriter
 
 from sp_api.base import Marketplaces, ReportType
@@ -6,6 +7,8 @@ from src.adapters.amazon_products_collector import AmazonReportProductsCollector
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
 from src.adapters.amazon_reports_collector import AmazonReportCollector
 from src.application.amazon_product_collector.dto.product import AmazonReportProduct
+
+logging.basicConfig(level=logging.INFO)
 
 
 def write_products_in_file(products: list[AmazonReportProduct]) -> None:
@@ -27,15 +30,15 @@ marketplaces = [
 ]
 report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
 
-products = []
 collector = AmazonReportProductsCollector(
     report_collector=AmazonReportCollector,
     report_convertor=ReportProductConvertor,
 )
 for marketplace in marketplaces:
-    print(marketplace)
+    products = []
+    logging.info(marketplace)
     report_products = collector.collect(report_type=report_type, marketplace=marketplace)
     products.extend(report_products)
 
-print(len(products))
-write_products_in_file(products)
+    logging.info(len(products))
+    write_products_in_file(products)
