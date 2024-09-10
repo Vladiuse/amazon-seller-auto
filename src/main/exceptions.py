@@ -1,7 +1,3 @@
-class ReportCreationError(Exception):
-    """throw if report not created"""
-
-
 class ReportDocumentNotComplete(Exception):
     """Trow if report document status not in []"""
 
