@@ -1,7 +1,7 @@
 from time import sleep
 
 from sp_api.base import Marketplaces
-
+from src.main.exceptions import MaxTriesError
 from src.application.amazon.amazon_report_product_collector.dto.product import MarketplaceCountry
 
 
@@ -19,7 +19,7 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
                         raise e
                     print('Sleeping')
                     sleep(delay)
-            return None   # TODO тут может резить ошибку тип MaxTryError?
+            raise MaxTriesError
 
         return wrapper
 
