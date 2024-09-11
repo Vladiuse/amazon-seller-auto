@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
-from src.application.amazon_product_collector.dto.product import AmazonProduct
-from src.application.amazon_product_collector.interfaces.product_converter import IAmazonProductConvertor
+from src.application.amazon.amazon_product_collector import AmazonProduct
+from src.application.amazon.amazon_product_collector.interfaces.product_converter import IAmazonProductConvertor
 from src.main.exceptions import HtmlElementNotFound
 
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from sp_api.base import ReportType, Marketplaces
-from src.application.amazon_report_product_collector.interfaces.amazon_reports_collector import IAmazonReportCollector
-from src.application.amazon_report_product_collector.dto.report import ReportDocument
+from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import IAmazonReportCollector
+from src.application.amazon.amazon_report_product_collector import ReportDocument
 
 @dataclass(frozen=True)
 class BaseCollectAmazonReportDocumentUseCase:

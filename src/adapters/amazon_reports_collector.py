@@ -6,9 +6,9 @@ from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
-from src.application.amazon_report_product_collector.interfaces.amazon_reports_collector import IAmazonReportCollector
-from src.application.amazon_report_product_collector.utils import retry
+from src.application.amazon.amazon_report_product_collector import AmazonReport, ReportDocument
+from src.application.amazon.amazon_report_product_collector import IAmazonReportCollector
+from src.application.amazon.amazon_report_product_collector import retry
 from src.main.config import credentials
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
 

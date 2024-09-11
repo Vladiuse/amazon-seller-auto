@@ -6,7 +6,7 @@ from sp_api.base import Marketplaces, ReportType
 from src.adapters.amazon_products_collector import AmazonReportProductsCollector
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
 from src.adapters.amazon_reports_collector import AmazonReportCollector
-from src.application.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.application.amazon.amazon_report_product_collector import AmazonReportProduct
 
 logging.basicConfig(level=logging.INFO)
 

@@ -1,9 +1,9 @@
 import csv
 import io
 
-from src.application.amazon_report_product_collector.dto.product import MarketplaceCountry
-from src.application.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.application.amazon_report_product_collector.interfaces.report_product_converner import IReportProductConvertor
+from src.application.amazon.amazon_report_product_collector import MarketplaceCountry
+from src.application.amazon.amazon_report_product_collector import AmazonReportProduct
+from src.application.amazon.amazon_report_product_collector.interfaces.report_product_converner import IReportProductConvertor
 
 
 class ReportProductConvertor(IReportProductConvertor):

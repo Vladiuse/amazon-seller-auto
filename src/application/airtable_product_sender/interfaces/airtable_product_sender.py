@@ -1,9 +1,8 @@
 import requests as req
 
 from src.application.airtable_product_sender.dto.product_table import CREATE_AMAZON_PRODUCT_TABLE_DATA
-from src.application.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.application.amazon.amazon_report_product_collector import AmazonReportProduct
 from src.main.config import airtable_config
-import json
 from pprint import pprint
 from pyairtable import Api
 
