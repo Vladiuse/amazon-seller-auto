@@ -22,6 +22,9 @@ class ZenRowConfig(BaseSettings):
 
 config = Config()
 airtable_config = AirTableConfig()
+zenrows_conf = ZenRowConfig()
+
+ACTIVE_ASINS_FILE_PATH = 'active_asins.txt'
 
 credentials = {
     'refresh_token': config.SP_API_REFRESH_TOKEN,
