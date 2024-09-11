@@ -16,6 +16,9 @@ class AirTableConfig(BaseSettings):
     AIRTABLE_API_KEY: str
     AIRTABLE_APP_ID: str
 
+class ZenRowConfig(BaseSettings):
+    ZENROWS_API_KEY: str
+
 
 config = Config()
 airtable_config = AirTableConfig()
