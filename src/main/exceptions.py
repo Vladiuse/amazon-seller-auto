@@ -4,3 +4,8 @@ class ReportDocumentNotComplete(Exception):
 
 class ReportStatusError(Exception):
     """Throw if report processing status is FATAL or CANCELED"""
+
+
+class HtmlElementNotFound(Exception):
+    """Throw if html element not found"""
+
