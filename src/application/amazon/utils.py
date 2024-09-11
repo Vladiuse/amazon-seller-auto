@@ -1,8 +1,11 @@
 from time import sleep
 
 from sp_api.base import Marketplaces
-from src.main.exceptions import MaxTriesError
+
 from src.application.amazon.amazon_report_product_collector.dto.product import MarketplaceCountry
+from src.application.amazon.dto import Asin
+from src.main.config import ACTIVE_ASINS_FILE_PATH
+from src.main.exceptions import MaxTriesError
 
 
 def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseException]] = None):
@@ -25,6 +28,7 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
 
     return decorator
 
+
 # TODO
 # норм так делать? тк в Marketplaces не могу код нео получить
 def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
@@ -35,4 +39,15 @@ def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
         'APJ6JRA9NG5V4': 'IT',
         'A1F83G8C2ARO7P': 'UK',
     }[marketplace.marketplace_id]
-    return MarketplaceCountry(key)
+    return getattr(MarketplaceCountry, key)
+
+
+def get_active_asins() -> list[Asin]:
+    asins = []
+    with open(ACTIVE_ASINS_FILE_PATH) as file:
+        for line in file:
+            asin_str = line.strip()
+            if asin_str != '':
+                asin = Asin(value=asin_str)
+                asins.append(asin)
+    return asins
