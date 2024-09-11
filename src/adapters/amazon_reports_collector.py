@@ -1,4 +1,5 @@
 import logging
+import os
 
 import requests as req
 from requests.exceptions import RequestException
@@ -6,9 +7,12 @@ from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon.amazon_report_product_collector import AmazonReport, ReportDocument
-from src.application.amazon.amazon_report_product_collector import IAmazonReportCollector
-from src.application.amazon.amazon_report_product_collector import retry
+from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReport
+from src.application.amazon.amazon_report_product_collector.dto.report import ReportDocument
+from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
+    IAmazonReportCollector,
+)
+from src.application.amazon.utils import retry
 from src.main.config import credentials
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
 
@@ -74,3 +78,13 @@ class AmazonReportCollector(IAmazonReportCollector):
     # в этом классе норм это расположить или в какой другой вынести?
     # и теоретически может возникнуть ситуация что report не создаться или создаться с
     # статусом Fail на всех попытках - я не понимаю что в таком случае делать.
+
+
+class AmazonSavedReportCollector(AmazonReportCollector):
+
+    def create_and_get_report_text(self, report_type: ReportType) -> str:
+        geo = str(self.marketplace).split('.')[-1]
+        file_name = f'{geo}_{report_type.value}.txt'
+        file_path = os.path.join('media/reports', file_name)
+        with open(file_path) as file:
+            return file.read()
