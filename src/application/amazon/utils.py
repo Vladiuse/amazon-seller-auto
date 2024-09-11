@@ -19,7 +19,7 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
                         raise e
                     print('Sleeping')
                     sleep(delay)
-            raise MaxTriesError
+            raise MaxTriesError(func.__name__)
 
         return wrapper
 
