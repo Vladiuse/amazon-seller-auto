@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Product:
+class AmazonProduct:
     rating: float
     reviews_total: int

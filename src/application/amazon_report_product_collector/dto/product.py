@@ -25,6 +25,12 @@ class MarketplaceCountry(str, Enum):
     UK = 'UK'
     ES = 'ES'
 
+# https://www.amazon.co.uk/
+# https://www.amazon.de/
+# https://www.amazon.es/
+# https://www.amazon.fr
+# https://www.amazon.it/
+
 
 asin = str
 
