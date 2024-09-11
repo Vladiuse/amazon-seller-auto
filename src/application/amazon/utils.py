@@ -42,7 +42,7 @@ def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
     return getattr(MarketplaceCountry, key)
 
 
-def get_active_asins() -> list[Asin]:
+def get_active_asins(return_string=False) -> list[Asin | str]:
     asins = []
     with open(ACTIVE_ASINS_FILE_PATH) as file:
         for line in file:
@@ -50,4 +50,6 @@ def get_active_asins() -> list[Asin]:
             if asin_str != '':
                 asin = Asin(value=asin_str)
                 asins.append(asin)
+    if return_string:
+        return [asin.value for asin in asins]
     return asins
