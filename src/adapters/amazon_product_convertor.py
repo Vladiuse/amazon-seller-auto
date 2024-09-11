@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
 from src.application.amazon.amazon_product_collector.interfaces.product_converter import IAmazonProductConvertor
-from src.main.exceptions import HtmlElementNotFound
+from src.main.exceptions import HtmlElementNotFound, ParserError
 
 
 def get_numbers(string: str) -> int:
@@ -25,7 +25,10 @@ class AmazonProductConvertor(IAmazonProductConvertor):
         reviews_block = soup.find('span', attrs={'id': 'acrCustomerReviewText'})
         if reviews_block is None:
             raise HtmlElementNotFound
-        return get_numbers(reviews_block.text)
+        try:
+            return get_numbers(reviews_block.text)
+        except ValueError:
+            raise ParserError('Cant get reviews')
 
     def _get_rating(self, soup: BeautifulSoup) -> float:
         rate_block = soup.find('span', attrs={'class': 'reviewCountTextLinkedHistogram'})
@@ -35,4 +38,7 @@ class AmazonProductConvertor(IAmazonProductConvertor):
         if rating is None:
             raise HtmlElementNotFound
         rating_text = rating.text.strip().replace(',', '.')
-        return float(rating_text)
+        try:
+            return float(rating_text)
+        except ValueError:
+            raise ParserError('Cant get rating')
