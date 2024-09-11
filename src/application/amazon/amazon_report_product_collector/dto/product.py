@@ -2,6 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel, Field, ConfigDict
 from sp_api.base import Marketplaces, ReportType
+from src.application.amazon.dto import AsinStr
 
 
 
@@ -32,12 +33,9 @@ class MarketplaceCountry(str, Enum):
 # https://www.amazon.it/
 
 
-asin = str
-
-
 class AmazonReportProduct(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    asin: asin
+    asin: AsinStr
     name: str = Field(alias='product-name')
     marketplace_country: MarketplaceCountry
     sku: str
