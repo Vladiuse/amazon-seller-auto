@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.application.amazon.amazon_product_collector import AmazonProduct
+from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
 
 class IAmazonProductConvertor(ABC):
 
