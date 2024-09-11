@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 
 from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
+from src.application.amazon.dto import Asin, MarketplaceCountry
+
 
 class IAmazonProductConvertor(ABC):
 
     @abstractmethod
-    def convert(self, html: str) -> AmazonProduct:
+    def convert(self, html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         raise NotImplementedError
