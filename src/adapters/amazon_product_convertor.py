@@ -18,16 +18,16 @@ class AmazonProductConvertor(IAmazonProductConvertor):
 
     def convert(self, html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         soup = BeautifulSoup(html, 'lxml')
-        reviews_total = self._get_reviews_total(soup)
+        rating_reviews = self._get_rating_reviews(soup)
         rating = self._get_rating(soup)
         return AmazonProduct(
-            reviews_total=reviews_total,
+            rating_reviews=rating_reviews,
             rating=rating,
-            asin=asin.value,
-            marketplace_country=marketplace_country.country_code,
+            asin=asin,
+            marketplace_country=marketplace_country,
         )
 
-    def _get_reviews_total(self, soup: BeautifulSoup) -> int:
+    def _get_rating_reviews(self, soup: BeautifulSoup) -> int:
         reviews_block = soup.find('span', attrs={'id': 'acrCustomerReviewText'})
         if reviews_block is None:
             raise HtmlElementNotFound
