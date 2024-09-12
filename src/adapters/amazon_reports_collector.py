@@ -7,8 +7,7 @@ from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReport
-from src.application.amazon.amazon_report_product_collector.dto.report import ReportDocument
+from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
     IAmazonReportCollector,
 )
@@ -46,7 +45,8 @@ class AmazonReportCollector(IAmazonReportCollector):
             if report.is_document_created():
                 return AmazonReport(**data.payload)
             raise ReportStatusError
-        logging.info('report not complete')
+        logging.error(data.payload)
+        logging.error('report not complete')
         raise ReportDocumentNotComplete
 
     def get_report_document(self, document_id: str) -> ReportDocument:
