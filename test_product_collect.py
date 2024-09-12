@@ -11,6 +11,7 @@ from src.application.amazon.amazon_product_collector.usecase import CollectAmazo
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
 from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.application.amazon.utils import get_active_asins
+from src.application.airtable_product_sender.interfaces.airtable_product_sender import AirTableProductSender
 
 logging.basicConfig(level=logging.INFO)
 marketplaces = [
@@ -69,5 +70,10 @@ for product in active_products:
             product.rating_reviews = product_from_pars.rating_reviews
             break
 
-for product in active_products:
-    print(product)
+
+airtable_sender = AirTableProductSender()
+airtable_sender.clean_table()
+airtable_sender.send_products_to_table(
+    products=active_products,
+)
+
