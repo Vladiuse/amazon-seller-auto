@@ -12,3 +12,6 @@ class MarketplaceCountry(Enum):
     def __init__(self, country_code: str, url: str):
         self.country_code = country_code
         self.url = url
+
+    def __str__(self):
+        return self.country_code
