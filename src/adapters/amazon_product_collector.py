@@ -23,7 +23,7 @@ class AmazonProductCollector(IAmazonProductCollector):
         return self.product_convertor.convert(html=html, asin=asin, marketplace_country=marketplace_country)
 
     @retry(
-        attempts=2,
+        attempts=5,
         delay=5,
         exceptions=[HTTPError, ],
     )
