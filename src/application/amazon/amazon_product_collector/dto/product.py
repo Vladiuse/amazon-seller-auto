@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from src.application.amazon.dto import Asin, MarketplaceCountry
 
 
 @dataclass(frozen=True)
 class AmazonProduct:
-    asin: str
-    marketplace_country: str
+    asin: Asin
+    marketplace_country: MarketplaceCountry
     rating: float
-    reviews_total: int
+    rating_reviews: int
