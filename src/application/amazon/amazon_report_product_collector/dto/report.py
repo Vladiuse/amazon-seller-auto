@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from sp_api.base import ProcessingStatus, ReportType
+from datetime import datetime
 
 
 class AmazonReport(BaseModel):
@@ -8,6 +9,7 @@ class AmazonReport(BaseModel):
     marketplace_ids: list[str] = Field(alias='marketplaceIds')
     processing_status: ProcessingStatus = Field(alias='processingStatus')
     report_type: ReportType = Field(alias='reportType')
+    created: datetime = Field(alias='createdTime')
     document_id: str | None = Field(default=None, alias='reportDocumentId')
 
 
