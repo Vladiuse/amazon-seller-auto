@@ -12,6 +12,14 @@ class IAmazonReportCollector(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_exiting_report(self, report_type: ReportType) -> AmazonReport | None:
+        raise NotImplementedError
+
+    @abstractmethod
     def get_report(self, report_id: str) -> AmazonReport:
         raise NotImplementedError
 

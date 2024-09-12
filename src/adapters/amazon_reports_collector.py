@@ -1,10 +1,11 @@
 import logging
 import os
+from datetime import datetime
 
 import requests as req
 from requests.exceptions import RequestException
 from sp_api.api import Reports
-from sp_api.base import Marketplaces, ReportType
+from sp_api.base import Marketplaces, ProcessingStatus, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
 from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
@@ -31,6 +32,27 @@ class AmazonReportCollector(IAmazonReportCollector):
         data = self.reports.create_report(reportType=report_type)
         logging.info(data.payload)
         return data.payload['reportId']
+
+    @retry(
+        attempts=3,
+        delay=10,
+        exceptions=[SellingApiRequestThrottledException],
+    )
+    def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
+        date = datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat()
+        data = self.reports.get_reports(
+            reportTypes=[report_type, ],
+            processingStatuses=[ProcessingStatus.DONE, ],
+            createdSince=date,
+        )
+        logging.info(data.payload)
+        return [AmazonReport(**report_data) for report_data in data.payload['reports']]
+
+    def get_exiting_report(self, report_type: ReportType) -> AmazonReport | None:
+        reports = self.get_today_reports(report_type=report_type)
+        if reports:
+            return max(reports, key=lambda report: report.created)
+        return None
 
     @retry(
         attempts=20,
@@ -69,8 +91,11 @@ class AmazonReportCollector(IAmazonReportCollector):
         exceptions=[ReportStatusError, ],
     )
     def create_and_get_report_text(self, report_type: ReportType) -> str:
-        report_id = self.create_report(report_type=report_type)
-        report = self.get_report(report_id=report_id)
+        report = self.get_exiting_report(report_type=report_type)
+        logging.info('Get exiting report')
+        if report is None:
+            report_id = self.create_report(report_type=report_type)
+            report = self.get_report(report_id=report_id)
         report_document = self.get_report_document(document_id=report.document_id)
         return self.get_report_document_text(report_document.url)
 
