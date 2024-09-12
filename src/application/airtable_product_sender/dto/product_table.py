@@ -1,8 +1,10 @@
 from enum import Enum
 from typing import Any
 
+from pyairtable.orm import Model
+from pyairtable.orm import fields as F
 from pydantic import BaseModel
-from pyairtable.orm import Model, fields as F
+
 from src.main.config import airtable_config
 
 
@@ -51,7 +53,7 @@ CREATE_AMAZON_PRODUCT_TABLE_DATA = AirTableRequest(
 )
 
 
-class AmazonProduct(Model):
+class AmazonProductTable(Model):
     asin = F.TextField("asin")
     sku = F.TextField("sku")
     name = F.TextField("name")
@@ -63,9 +65,7 @@ class AmazonProduct(Model):
     rating = F.NumberField("rating")
     rating_reviews = F.NumberField("rating_reviews")
 
-
     class Meta:
         base_id = airtable_config.AIRTABLE_APP_ID
         table_name = "tblzufSUwmXFyRQon"
         api_key = airtable_config.AIRTABLE_API_KEY
-
