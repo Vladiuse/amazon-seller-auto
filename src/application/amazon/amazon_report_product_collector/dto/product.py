@@ -1,18 +1,10 @@
 from pydantic import BaseModel, ConfigDict, Field
-from sp_api.base import Marketplaces, ReportType
 
 from src.application.amazon.dto import AsinStr, MarketplaceCountry
 
 
 class AmazonDocument(BaseModel):
     id: str
-
-
-class AmazonReport(BaseModel):
-    id: str | None = None
-    marketplace: Marketplaces
-    type: ReportType
-    document: AmazonDocument
 
 
 class AmazonReportProduct(BaseModel):
