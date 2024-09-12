@@ -3,8 +3,12 @@ from pydantic_settings import BaseSettings
 
 load_dotenv()
 
+ACTIVE_ASINS_FILE_PATH = 'active_asins.txt'
+REPORTS_DIR = 'media/reports/'
+AMAZON_PRODUCT_PAGES_DIR = 'media/zen_pars'
 
-class Config(BaseSettings):
+
+class AmazonConfig(BaseSettings):
     SP_API_REFRESH_TOKEN: str
     LWA_APP_ID: str
     LWA_CLIENT_SECRET: str
@@ -16,18 +20,17 @@ class AirTableConfig(BaseSettings):
     AIRTABLE_API_KEY: str
     AIRTABLE_APP_ID: str
 
+
 class ZenRowConfig(BaseSettings):
     ZENROWS_API_KEY: str
 
 
-config = Config()
+amazon_config = AmazonConfig()
 airtable_config = AirTableConfig()
-zenrows_conf = ZenRowConfig()
+zenrows_config = ZenRowConfig()
 
-ACTIVE_ASINS_FILE_PATH = 'active_asins.txt'
-
-credentials = {
-    'refresh_token': config.SP_API_REFRESH_TOKEN,
-    'lwa_app_id': config.LWA_CLIENT_ID,
-    'lwa_client_secret': config.LWA_CLIENT_SECRET,
+amazon_credentials = {
+    'refresh_token': amazon_config.SP_API_REFRESH_TOKEN,
+    'lwa_app_id': amazon_config.LWA_CLIENT_ID,
+    'lwa_client_secret': amazon_config.LWA_CLIENT_SECRET,
 }

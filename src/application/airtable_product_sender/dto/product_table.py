@@ -5,7 +5,7 @@ from pyairtable.orm import Model
 from pyairtable.orm import fields as F
 from pydantic import BaseModel
 
-from src.main.config import airtable_config
+from src.main.amazonconfig import airtable_config
 
 
 class AirTableFieldType(Enum):

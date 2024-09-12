@@ -4,7 +4,7 @@ from sp_api.base import Marketplaces
 
 from src.application.amazon.amazon_report_product_collector.dto.product import MarketplaceCountry
 from src.application.amazon.dto import Asin
-from src.main.config import ACTIVE_ASINS_FILE_PATH
+from src.main.amazonconfig import ACTIVE_ASINS_FILE_PATH
 from src.main.exceptions import MaxTriesError
 
 

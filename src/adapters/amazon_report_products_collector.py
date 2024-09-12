@@ -30,3 +30,6 @@ class AmazonReportProductsCollector(IAmazonReportProductsCollector):
             report_document_text=report_text,
             marketplace_country=marketplace_country,
         )
+
+    def _save_report(self, report_type: ReportType, marketplace: Marketplaces):
+        pass

@@ -13,7 +13,7 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
     IAmazonReportCollector,
 )
 from src.application.amazon.utils import retry
-from src.main.config import credentials
+from src.main.amazonconfig import amazon_credentials
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
 
 
@@ -21,7 +21,7 @@ class AmazonReportCollector(IAmazonReportCollector):
 
     def __init__(self, marketplace: Marketplaces):
         self.marketplace = marketplace
-        self.reports = Reports(credentials=credentials, marketplace=marketplace)
+        self.reports = Reports(credentials=amazon_credentials, marketplace=marketplace)
 
     @retry(
         attempts=5,
