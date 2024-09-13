@@ -8,7 +8,7 @@ from src.application.airtable_product_sender.dto.product_table import (
 )
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.main.amazonconfig import airtable_config
+from src.main.config import airtable_config
 
 airtable = Api(api_key=airtable_config.AIRTABLE_API_KEY)
 

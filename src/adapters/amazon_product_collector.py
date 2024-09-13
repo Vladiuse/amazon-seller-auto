@@ -10,7 +10,7 @@ from src.application.amazon.amazon_product_collector.dto.product import AmazonPr
 from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.application.amazon.utils import retry
-from src.main.amazonconfig import zenrows_config
+from src.main.config import zenrows_config
 from src.main.exceptions import MaxTriesError
 
 
