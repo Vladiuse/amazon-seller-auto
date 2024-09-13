@@ -5,8 +5,6 @@ from src.application.amazon.amazon_product_collector.interfaces.product_collecto
 from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.main.exceptions import MaxTriesError, ParserError
 
-logging.basicConfig(level=logging.INFO)
-
 
 class CollectAmazonProductsUseCase:
 

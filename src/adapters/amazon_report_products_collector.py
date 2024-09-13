@@ -1,7 +1,8 @@
+
 from sp_api.base import Marketplaces, ReportType
 
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_products_collector import (
+from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report_products_collector import (
     IAmazonReportProductsCollector,
 )
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
@@ -30,6 +31,3 @@ class AmazonReportProductsCollector(IAmazonReportProductsCollector):
             report_document_text=report_text,
             marketplace_country=marketplace_country,
         )
-
-    def _save_report(self, report_type: ReportType, marketplace: Marketplaces):
-        pass

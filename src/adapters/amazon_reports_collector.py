@@ -13,7 +13,7 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
     IAmazonReportCollector,
 )
 from src.application.amazon.utils import retry
-from src.main.config import amazon_credentials
+from src.main.config import REPORTS_DIR, amazon_credentials
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
 
 
@@ -90,19 +90,24 @@ class AmazonReportCollector(IAmazonReportCollector):
         delay=1,
         exceptions=[ReportStatusError, ],
     )
-    def create_and_get_report_text(self, report_type: ReportType) -> str:
+    def create_and_get_report_text(self, report_type: ReportType, save_report: bool = False) -> str:
         report = self.get_exiting_report(report_type=report_type)
         logging.info('Get exiting report')
         if report is None:
             report_id = self.create_report(report_type=report_type)
             report = self.get_report(report_id=report_id)
         report_document = self.get_report_document(document_id=report.document_id)
-        return self.get_report_document_text(report_document.url)
+        report_text = self.get_report_document_text(report_document.url)
+        if save_report:
+            self.__save_report(report_text=report_text, report_type=report_type, marketplace=self.marketplace)
+        return report_text
 
-    # TODO тут я выполняю цезочку запросов, дейстивой чтоб создать отчет
-    # в этом классе норм это расположить или в какой другой вынести?
-    # и теоретически может возникнуть ситуация что report не создаться или создаться с
-    # статусом Fail на всех попытках - я не понимаю что в таком случае делать.
+    def __save_report(self, report_text: str, report_type: ReportType, marketplace: Marketplaces) -> None:
+        geo = str(marketplace).split('.')[-1]
+        report_file_name = f'{geo}_{report_type}.csv'
+        report_file_path = os.path.join(REPORTS_DIR, report_file_name)
+        with open(report_file_path, 'w') as file:
+            file.write(report_text)
 
 
 class AmazonSavedReportCollector(AmazonReportCollector):

@@ -18,8 +18,8 @@ class AmazonProductConvertor(IAmazonProductConvertor):
 
     def convert(self, html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         soup = BeautifulSoup(html, 'lxml')
-        rating_reviews = self._get_rating_reviews(soup)
-        rating = self._get_rating(soup)
+        rating_reviews = self.__get_rating_reviews(soup)
+        rating = self.__get_rating(soup)
         return AmazonProduct(
             rating_reviews=rating_reviews,
             rating=rating,
@@ -27,7 +27,7 @@ class AmazonProductConvertor(IAmazonProductConvertor):
             marketplace_country=marketplace_country,
         )
 
-    def _get_rating_reviews(self, soup: BeautifulSoup) -> int:
+    def __get_rating_reviews(self, soup: BeautifulSoup) -> int:
         reviews_block = soup.find('span', attrs={'id': 'acrCustomerReviewText'})
         if reviews_block is None:
             raise HtmlElementNotFound
@@ -36,7 +36,7 @@ class AmazonProductConvertor(IAmazonProductConvertor):
         except ValueError:
             raise ParserError('Cant get reviews')
 
-    def _get_rating(self, soup: BeautifulSoup) -> float:
+    def __get_rating(self, soup: BeautifulSoup) -> float:
         rate_block = soup.find('span', attrs={'class': 'reviewCountTextLinkedHistogram'})
         if rate_block is None:
             raise HtmlElementNotFound

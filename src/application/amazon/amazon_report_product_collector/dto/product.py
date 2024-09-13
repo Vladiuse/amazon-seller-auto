@@ -3,10 +3,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from src.application.amazon.dto import AsinStr, MarketplaceCountry
 
 
-class AmazonDocument(BaseModel):
-    id: str
-
-
 class AmazonReportProduct(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 

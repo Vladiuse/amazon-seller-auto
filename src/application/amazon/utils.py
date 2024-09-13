@@ -29,8 +29,6 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
     return decorator
 
 
-# TODO
-# норм так делать? тк в Marketplaces не могу код нео получить
 def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
     key = {
         'A13V1IB3VIYZZH': 'FR',

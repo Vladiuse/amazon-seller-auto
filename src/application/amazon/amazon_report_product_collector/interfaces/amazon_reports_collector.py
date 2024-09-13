@@ -32,5 +32,5 @@ class IAmazonReportCollector(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_and_get_report_text(self, report_type: ReportType) -> str:
+    def create_and_get_report_text(self, report_type: ReportType, save_report: bool = False) -> str:
         raise NotImplementedError
