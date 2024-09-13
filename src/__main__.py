@@ -2,12 +2,13 @@ import logging
 
 from sp_api.base import Marketplaces, ReportType
 
-from src.adapters.amazon_product_collector import AmazonProductCollectorFromSavedFile, AmazonProductCollector
+from src.adapters.airtable_product_sender import AirTableProductSender
+from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_convertor import AmazonProductConvertor
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
-from src.adapters.amazon_reports_collector import AmazonSavedReportCollector, AmazonReportCollector
-from src.application.airtable_product_sender.interfaces.airtable_product_sender import AirTableProductSender
+from src.adapters.amazon_reports_collector import AmazonReportCollector
+from src.application.airtable_product_sender.dto.product_table import AmazonProductTable
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
 from src.application.amazon.dto import Asin, MarketplaceCountry
@@ -29,7 +30,7 @@ for marketplace in marketplaces:
     logging.info(marketplace)
     report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
     collector = AmazonReportProductsCollector(
-        # report_collector=AmazonSavedReportCollector(marketplace),  # TEST
+        # report_collector=AmazonSavedReportCollector(marketplace),  # FOR TEST
         report_collector=AmazonReportCollector(marketplace),
         report_convertor=ReportProductConvertor(),
     )
@@ -47,7 +48,7 @@ for product in products_from_reports:
 
 logging.info('Total active_products: %s', len(active_products))
 
-# load rating and reviews
+# Load rating and reviews
 unique_asins_to_parse: list[tuple[Asin, MarketplaceCountry]] = []
 for product in active_products:
     asin = Asin(value=product.asin)
@@ -58,12 +59,13 @@ for product in active_products:
 logging.info('Total unique_asins_to_parse: %s', len(unique_asins_to_parse))
 
 product_collector = CollectAmazonProductsUseCase(
-    # product_collector=AmazonProductCollectorFromSavedFile(product_convertor=AmazonProductConvertor()),  # TEST
+    # product_collector=AmazonProductCollectorFromSavedFile(product_convertor=AmazonProductConvertor()),  # FOR TEST
     product_collector=AmazonProductCollector(product_convertor=AmazonProductConvertor()),
 )
 products_from_pars = product_collector.collect(unique_asins_to_parse)
 logging.info('Total parsed asins: %s', len(products_from_pars))
 
+# Join data from reports with data from pars
 for product in active_products:
     for product_from_pars in products_from_pars:
         if product.asin == product_from_pars.asin.value and \
@@ -72,8 +74,9 @@ for product in active_products:
             product.rating_reviews = product_from_pars.rating_reviews
             break
 
+# Send data to airtable
+AmazonProductTable.clean_table()
 airtable_sender = AirTableProductSender()
-airtable_sender.clean_table()
 airtable_sender.send_products_to_table(
     products=active_products,
 )

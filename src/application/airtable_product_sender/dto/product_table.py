@@ -67,5 +67,10 @@ class AmazonProductTable(Model):
 
     class Meta:
         base_id = airtable_config.AIRTABLE_APP_ID
-        table_name = "tblzufSUwmXFyRQon"
+        table_name = airtable_config.AIRTABLE_TABLE_ID
         api_key = airtable_config.AIRTABLE_API_KEY
+
+    @staticmethod
+    def clean_table() -> None:
+        records = AmazonProductTable.all()
+        AmazonProductTable.batch_delete(records)
