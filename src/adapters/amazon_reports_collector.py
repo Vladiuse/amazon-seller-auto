@@ -104,7 +104,7 @@ class AmazonReportCollector(IAmazonReportCollector):
 
     def __save_report(self, report_text: str, report_type: ReportType, marketplace: Marketplaces) -> None:
         geo = str(marketplace).split('.')[-1]
-        report_file_name = f'{geo}_{report_type}.csv'
+        report_file_name = f'{geo}_{report_type.value}.csv'
         report_file_path = os.path.join(REPORTS_DIR, report_file_name)
         with open(report_file_path, 'w') as file:
             file.write(report_text)
@@ -115,6 +115,6 @@ class AmazonSavedReportCollector(AmazonReportCollector):
     def create_and_get_report_text(self, report_type: ReportType) -> str:
         geo = str(self.marketplace).split('.')[-1]
         file_name = f'{geo}_{report_type.value}.txt'
-        file_path = os.path.join('media/reports', file_name)
+        file_path = os.path.join(REPORTS_DIR, file_name)
         with open(file_path) as file:
             return file.read()

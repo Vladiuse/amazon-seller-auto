@@ -25,7 +25,7 @@ class AmazonReportProductsCollector(IAmazonReportProductsCollector):
         self._report_convertor = report_convertor
 
     def collect(self, report_type: ReportType, marketplace: Marketplaces) -> list[AmazonReportProduct]:
-        report_text = self._report_collector.create_and_get_report_text(report_type=report_type)
+        report_text = self._report_collector.create_and_get_report_text(report_type=report_type, save_report=True)
         marketplace_country = get_get_by_marketplace_id(marketplace)
         return self._report_convertor.convert(
             report_document_text=report_text,
