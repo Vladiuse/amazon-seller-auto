@@ -10,7 +10,7 @@ from src.application.amazon.amazon_product_collector.dto.product import AmazonPr
 from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.application.amazon.utils import retry
-from src.main.config import AMAZON_PRODUCT_PAGES_DIR, zenrows_config
+from src.main.config import AMAZON_PRODUCT_PAGES_DIR, config
 from src.main.exceptions import MaxTriesError
 
 
@@ -28,7 +28,7 @@ class AmazonProductCollector(IAmazonProductCollector):
         exceptions=[HTTPError, ],
     )
     def get_amazon_product_page(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
-        client = ZenRowsClient(zenrows_config.ZENROWS_API_KEY)
+        client = ZenRowsClient(config.zenrows_config.ZENROWS_API_KEY)
         url = f'{marketplace_country.url}dp/{asin.value}'
         res = client.get(url)
         logging.info(url)

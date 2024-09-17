@@ -26,12 +26,10 @@ class ZenRowConfig(BaseSettings):
     ZENROWS_API_KEY: str
 
 
-amazon_config = AmazonConfig()
-airtable_config = AirTableConfig()
-zenrows_config = ZenRowConfig()
+class Config(BaseSettings):
+    amazon_config = AmazonConfig()
+    airtable_config = AirTableConfig()
+    zenrows_config = ZenRowConfig()
 
-amazon_credentials = {
-    'refresh_token': amazon_config.SP_API_REFRESH_TOKEN,
-    'lwa_app_id': amazon_config.LWA_CLIENT_ID,
-    'lwa_client_secret': amazon_config.LWA_CLIENT_SECRET,
-}
+config = Config()
+

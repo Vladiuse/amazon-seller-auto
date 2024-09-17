@@ -8,9 +8,9 @@ from src.application.airtable_product_sender.dto.product_table import (
 )
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.main.config import airtable_config
+from src.main.config import config
 
-airtable = Api(api_key=airtable_config.AIRTABLE_API_KEY)
+airtable = Api(api_key=config.airtable_config.AIRTABLE_API_KEY)
 
 
 class AirTableProductSender(IAirTableProductSender):
@@ -18,10 +18,10 @@ class AirTableProductSender(IAirTableProductSender):
     def create_table(self) -> None:
         data = CREATE_AMAZON_PRODUCT_TABLE_DATA.model_dump_json(exclude_none=True)
         headers = {
-            'Authorization': f'Bearer {airtable_config.AIRTABLE_API_KEY}',
+            'Authorization': f'Bearer {config.airtable_config.AIRTABLE_API_KEY}',
             'Content-Type': 'application/json',
         }
-        url = f'https://api.airtable.com/v0/meta/bases/{airtable_config.AIRTABLE_APP_ID}/tables'
+        url = f'https://api.airtable.com/v0/meta/bases/{config.airtable_config.AIRTABLE_APP_ID}/tables'
         req.post(url, headers=headers, data=data)
 
 

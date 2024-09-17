@@ -13,8 +13,14 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
     IAmazonReportCollector,
 )
 from src.application.amazon.utils import retry
-from src.main.config import REPORTS_DIR, amazon_credentials
+from src.main.config import REPORTS_DIR, config
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
+
+amazon_credentials = {
+    'refresh_token': config.amazon_config.SP_API_REFRESH_TOKEN,
+    'lwa_app_id': config.amazon_config.LWA_CLIENT_ID,
+    'lwa_client_secret': config.amazon_config.LWA_CLIENT_SECRET,
+}
 
 
 class AmazonReportCollector(IAmazonReportCollector):
