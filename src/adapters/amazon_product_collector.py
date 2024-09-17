@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from requests.exceptions import HTTPError
 from zenrows import ZenRowsClient
 
-from src.adapters.amazon_product_convertor import AmazonProductConvertor
+from src.adapters.amazon_product_convertor import AmazonProductConverter
 from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
 from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.dto import Asin, MarketplaceCountry
@@ -16,7 +16,7 @@ from src.main.exceptions import MaxTriesError
 
 @dataclass
 class AmazonProductCollector(IAmazonProductCollector):
-    product_convertor: AmazonProductConvertor
+    product_convertor: AmazonProductConverter
 
     def collect(self, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         html = self.get_amazon_product_page(asin=asin, marketplace_country=marketplace_country)

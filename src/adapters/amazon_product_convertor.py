@@ -6,15 +6,7 @@ from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.main.exceptions import HtmlElementNotFound, ParserError
 
 
-def get_numbers(string: str) -> int:
-    nums = ''
-    for char in string:
-        if char.isdigit():
-            nums = nums + char
-    return int(nums)
-
-
-class AmazonProductConvertor(IAmazonProductConvertor):
+class AmazonProductConverter(IAmazonProductConvertor):
 
     def convert(self, html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         soup = BeautifulSoup(html, 'lxml')
@@ -32,7 +24,7 @@ class AmazonProductConvertor(IAmazonProductConvertor):
         if reviews_block is None:
             raise HtmlElementNotFound
         try:
-            return get_numbers(reviews_block.text)
+            return self.__get_numbers(string=reviews_block.text)
         except ValueError:
             raise ParserError('Cant get reviews')
 
@@ -48,3 +40,10 @@ class AmazonProductConvertor(IAmazonProductConvertor):
             return float(rating_text)
         except ValueError:
             raise ParserError('Cant get rating')
+
+    def __get_numbers(self, string: str) -> int:
+        nums = ''
+        for char in string:
+            if char.isdigit():
+                nums = nums + char
+        return int(nums)
