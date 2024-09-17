@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 
-import requests as req
+import requests
 from requests.exceptions import RequestException
 from sp_api.api import Reports
 from sp_api.base import Marketplaces, ProcessingStatus, ReportType
@@ -32,7 +32,7 @@ class AmazonReportCollector(IAmazonReportCollector):
     @retry(
         attempts=5,
         delay=3 * 60,
-        exceptions=[SellingApiRequestThrottledException, ],
+        exceptions=(SellingApiRequestThrottledException, ),
     )
     def create_report(self, report_type: ReportType) -> str:
         data = self.reports.create_report(reportType=report_type)
@@ -42,7 +42,7 @@ class AmazonReportCollector(IAmazonReportCollector):
     @retry(
         attempts=3,
         delay=10,
-        exceptions=[SellingApiRequestThrottledException],
+        exceptions=(SellingApiRequestThrottledException, ),
     )
     def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
         date = datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat()
@@ -63,7 +63,7 @@ class AmazonReportCollector(IAmazonReportCollector):
     @retry(
         attempts=20,
         delay=30,
-        exceptions=[ReportDocumentNotComplete, ],
+        exceptions=(ReportDocumentNotComplete, ),
     )
     def get_report(self, report_id: str) -> AmazonReport:
         data = self.reports.get_report(reportId=report_id)
@@ -84,17 +84,17 @@ class AmazonReportCollector(IAmazonReportCollector):
     @retry(
         attempts=5,
         delay=10,
-        exceptions=[RequestException, ],
+        exceptions=(RequestException, ),
     )
     def get_report_document_text(self, report_document_url: str) -> str:
-        res = req.get(report_document_url)
+        res = requests.get(report_document_url)
         res.raise_for_status()
         return res.text
 
     @retry(
         attempts=3,
         delay=1,
-        exceptions=[ReportStatusError, ],
+        exceptions=(ReportStatusError, ),
     )
     def create_and_get_report_text(self, report_type: ReportType, save_report: bool = False) -> str:
         report = self.get_exiting_report(report_type=report_type)
@@ -103,7 +103,7 @@ class AmazonReportCollector(IAmazonReportCollector):
             report_id = self.create_report(report_type=report_type)
             report = self.get_report(report_id=report_id)
         report_document = self.get_report_document(document_id=report.document_id)
-        report_text = self.get_report_document_text(report_document.url)
+        report_text = self.get_report_document_text(report_document_url=report_document.url)
         if save_report:
             self.__save_report(report_text=report_text, report_type=report_type, marketplace=self.marketplace)
         return report_text

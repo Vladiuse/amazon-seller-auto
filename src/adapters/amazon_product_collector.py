@@ -25,7 +25,7 @@ class AmazonProductCollector(IAmazonProductCollector):
     @retry(
         attempts=5,
         delay=5,
-        exceptions=[HTTPError, ],
+        exceptions=(HTTPError, ),
     )
     def get_amazon_product_page(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
         client = ZenRowsClient(config.zenrows_config.ZENROWS_API_KEY)

@@ -31,5 +31,5 @@ class Config(BaseSettings):
     airtable_config = AirTableConfig()
     zenrows_config = ZenRowConfig()
 
-config = Config()
 
+config = Config()
