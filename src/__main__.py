@@ -2,7 +2,7 @@ import logging
 
 from sp_api.base import Marketplaces, ReportType
 
-from src.adapters.airtable_product_sender import AirTableProductSender
+from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_convertor import AmazonProductConvertor
 from src.adapters.amazon_report_product_convertor import ReportProductConvertor
