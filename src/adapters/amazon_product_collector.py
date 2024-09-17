@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from requests.exceptions import HTTPError
 from zenrows import ZenRowsClient
 
-from src.adapters.amazon_product_convertor import AmazonProductConverter
+from src.adapters.amazon_product_converter import AmazonProductConverter
 from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
 from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.dto import Asin, MarketplaceCountry
