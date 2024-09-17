@@ -4,8 +4,8 @@ from sp_api.base import Marketplaces, ReportType
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.amazon_product_collector import AmazonProductCollector
-from src.adapters.amazon_product_convertor import AmazonProductConvertor
-from src.adapters.amazon_report_product_convertor import ReportProductConvertor
+from src.adapters.amazon_product_converter import AmazonProductConverter
+from src.adapters.amazon_report_product_converter import ReportProductConverter
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
 from src.adapters.amazon_reports_collector import AmazonReportCollector
 from src.application.airtable_product_sender.dto.product_table import AmazonProductTable
@@ -32,7 +32,7 @@ for marketplace in marketplaces:
     collector = AmazonReportProductsCollector(
         # report_collector=AmazonSavedReportCollector(marketplace),  # FOR TEST
         report_collector=AmazonReportCollector(marketplace),
-        report_convertor=ReportProductConvertor(),
+        report_convertor=ReportProductConverter(),
     )
     products = collector.collect(report_type=report_type, marketplace=marketplace)
     logging.info('collected %s', len(products))
@@ -60,7 +60,7 @@ logging.info('Total unique_asins_to_parse: %s', len(unique_asins_to_parse))
 
 product_collector = CollectAmazonProductsUseCase(
     # product_collector=AmazonProductCollectorFromSavedFile(product_convertor=AmazonProductConvertor()),  # FOR TEST
-    product_collector=AmazonProductCollector(product_convertor=AmazonProductConvertor()),
+    product_collector=AmazonProductCollector(product_convertor=AmazonProductConverter()),
 )
 products_from_pars = product_collector.collect(unique_asins_to_parse)
 logging.info('Total parsed asins: %s', len(products_from_pars))

@@ -27,9 +27,13 @@ class ZenRowConfig(BaseSettings):
 
 
 class Config(BaseSettings):
-    amazon_config = AmazonConfig()
-    airtable_config = AirTableConfig()
-    zenrows_config = ZenRowConfig()
+    amazon_config:AmazonConfig
+    airtable_config: AirTableConfig
+    zenrows_config:ZenRowConfig
 
 
-config = Config()
+config = Config(
+    amazon_config=AmazonConfig(),
+    airtable_config=AirTableConfig(),
+    zenrows_config=ZenRowConfig(),
+)
