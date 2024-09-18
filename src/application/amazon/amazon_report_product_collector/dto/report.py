@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from sp_api.base import ProcessingStatus, ReportType
 
 
-class AmazonReport(BaseModel):
+class AmazonReportProduct(BaseModel):
     report_id: str = Field(alias='reportId')
     marketplace_ids: list[str] = Field(alias='marketplaceIds')
     processing_status: ProcessingStatus = Field(alias='processingStatus')
