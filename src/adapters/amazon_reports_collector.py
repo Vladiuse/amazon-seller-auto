@@ -12,7 +12,6 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
     IAmazonReportCollector,
 )
-from src.application.amazon.amazon_report_product_collector.usecase import GetExitingOrCreateAmazonReportUseCase
 from src.application.amazon.utils import save_amazon_report
 from src.main.config import REPORTS_DIR
 
@@ -25,11 +24,12 @@ class AmazonReportDocumentTextCollector(IAmazonReportCollector):
     report_document_getter: IAmazonReportDocumentGetter
 
     def collect(self, report_type: ReportType, save_report: bool = False) -> str:
-        report = GetExitingOrCreateAmazonReportUseCase(
-            sp_api_reports=self.sp_api_reports,
-            report_creator=self.report_creator,
-            report_getter=self.report_getter,
-        ).get_or_create_report(report_type=report_type)
+        exiting_reports = self.report_getter.get_today_reports(report_type=report_type)
+        if len(exiting_reports) != 0:
+            report = max(exiting_reports, key=lambda report: report.created)
+        else:
+            report_id = self.report_creator.create_report(report_type=report_type)
+            report = self.report_getter.get_report(report_id=report_id)
         report_document = self.report_document_getter.get_report_document(document_id=report.document_id)
         report_document_text = self.report_document_getter.get_report_document_text(document_url=report_document.url)
         if save_report:

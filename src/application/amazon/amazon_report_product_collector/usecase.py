@@ -1,62 +1,46 @@
 import logging
 from dataclasses import dataclass
 
-from sp_api.api import Reports as SpApiReports
-from sp_api.base import ReportType
+from sp_api.api import Reports
+from sp_api.base import Marketplaces, ReportType
 
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
-    IAmazonReportCreator,
-    IAmazonReportGetter,
-)
-from src.application.amazon.utils import retry
-from src.main.exceptions import ReportStatusError
-
-
-@dataclass
-class CreateAmazonReportUseCase:
-    sp_api_reports: SpApiReports
-    report_creator: IAmazonReportCreator
-    report_getter: IAmazonReportGetter
-
-    @retry(
-        attempts=3,
-        delay=60,
-        exceptions=(ReportStatusError,),
-    )
-    def create_report(self, report_type: ReportType) -> AmazonReport:
-        report_id = self.report_creator.create_report(report_type=report_type)
-        return self.report_getter.get_report(report_id=report_id)
+from src.adapters.amazon_report_creator import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
+from src.adapters.amazon_report_product_converter import ReportProductConverter
+from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
+from src.adapters.amazon_reports_collector import AmazonReportDocumentTextCollector, AmazonSavedReportDocumentReader
+from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.main.config import config
 
 
 @dataclass
-class GetExitingAmazonReportsUseCase:
-    sp_api_reports: SpApiReports
-    report_getter: IAmazonReportGetter
+class CollectFBAInventoryReportProductsUseCase:
 
-    def get_exiting_report(self, report_type: ReportType) -> AmazonReport | None:
-        reports = self.report_getter.get_today_reports(report_type=report_type)
-        if len(reports) != 0:
-            return max(reports, key=lambda report: report.created)
-        return None
-
-
-@dataclass
-class GetExitingOrCreateAmazonReportUseCase:
-    sp_api_reports: SpApiReports
-    report_creator: IAmazonReportCreator
-    report_getter: IAmazonReportGetter
-
-    def get_or_create_report(self, report_type: ReportType) -> AmazonReport:
-        exiting_report = GetExitingAmazonReportsUseCase(
-            sp_api_reports=self.sp_api_reports,
-            report_getter=self.report_getter,
-        ).get_exiting_report(report_type=report_type)
-        if exiting_report is not None:
-            logging.info('Get exiting report')
-            return exiting_report
-        return CreateAmazonReportUseCase(
-            sp_api_reports=self.sp_api_reports,
-            report_creator=self.report_creator,
-            report_getter=self.report_getter,
-        ).create_report(report_type=report_type)
+    def collect(self, marketplaces: list[Marketplaces]) -> list[AmazonReportProduct]:
+        amazon_credentials = {
+            'refresh_token': config.amazon_config.SP_API_REFRESH_TOKEN,
+            'lwa_app_id': config.amazon_config.LWA_CLIENT_ID,
+            'lwa_client_secret': config.amazon_config.LWA_CLIENT_SECRET,
+        }
+        report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
+        products = []
+        for marketplace in marketplaces:
+            sp_api_reports = Reports(credentials=amazon_credentials, marketplace=marketplace)
+            reports_getter = AmazonReportGetter(sp_api_reports=sp_api_reports)
+            report_creator = AmazonReportCreator(sp_api_reports=sp_api_reports)
+            report_document_getter = AmazonReportDocumentGetter(sp_api_reports=sp_api_reports)
+            report_text_collector = AmazonReportDocumentTextCollector(
+                sp_api_reports=sp_api_reports,
+                report_creator=report_creator,
+                report_getter=reports_getter,
+                report_document_getter=report_document_getter,
+            )
+            report_convertor = ReportProductConverter()
+            report_product_collector = AmazonReportProductsCollector(
+                report_convertor=report_convertor,
+                # report_collector=report_text_collector,
+                report_collector=AmazonSavedReportDocumentReader(sp_api_reports=sp_api_reports),  # TEST
+            )
+            report_products = report_product_collector.collect(report_type=report_type, marketplace=marketplace)
+            logging.info('On %s collected: %s', marketplace, len(report_products))
+            products.extend(report_products)
+        return products
