@@ -8,7 +8,7 @@ from sp_api.base import ProcessingStatus, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
 from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report_creator import (
+from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
     IAmazonReportGetter,
