@@ -38,9 +38,8 @@ def save_amazon_product_page(html: str, asin: Asin, marketplace_country: Marketp
         file.write(html)
 
 
-def save_amazon_report(report_text: str, report_type: ReportType, marketplace: Marketplaces) -> None:
-    geo = str(marketplace).split('.')[-1]
-    report_file_name = f'{geo}_{report_type.value}.csv'
+def save_amazon_report(report_text: str, report_type: ReportType, marketplace_id: str) -> None:
+    report_file_name = f'{marketplace_id}_{report_type.value}.csv'
     report_file_path = os.path.join(REPORTS_DIR, report_file_name)
     with open(report_file_path, 'w') as file:
         file.write(report_text)

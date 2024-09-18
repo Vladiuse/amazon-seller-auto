@@ -7,7 +7,7 @@ from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_converter import AmazonProductConverter
 from src.adapters.amazon_report_product_converter import ReportProductConverter
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
-from src.adapters.amazon_reports_collector import AmazonReportCollector
+from src.adapters.amazon_reports_collector import AmazonReportTextCollector
 from src.application.airtable_product_sender.dto.product_table import AmazonProductTable
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
@@ -31,7 +31,7 @@ for marketplace in marketplaces:
     report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
     collector = AmazonReportProductsCollector(
         # report_collector=AmazonSavedReportCollector(marketplace),  # FOR TEST
-        report_collector=AmazonReportCollector(marketplace),
+        report_collector=AmazonReportTextCollector(marketplace),
         report_convertor=ReportProductConverter(),
     )
     products = collector.collect(report_type=report_type, marketplace=marketplace)
