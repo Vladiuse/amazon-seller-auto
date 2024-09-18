@@ -1,5 +1,4 @@
 import logging
-from dataclasses import dataclass
 
 from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
@@ -12,7 +11,6 @@ from src.application.amazon.amazon_report_product_collector.dto.product import A
 from src.main.config import config
 
 
-@dataclass
 class CollectFBAInventoryReportProductsUseCase:
 
     def collect(self, marketplaces: list[Marketplaces]) -> list[AmazonReportProduct]:

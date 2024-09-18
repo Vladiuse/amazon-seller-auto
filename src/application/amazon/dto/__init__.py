@@ -1,2 +1,2 @@
 from .asin import Asin, AsinStr
-from .marketplace import MarketplaceCountry
+from ..common.types import MarketplaceCountry

@@ -8,7 +8,8 @@ from src.application.amazon.amazon_product_collector.dto.product import AmazonPr
 from src.application.amazon.amazon_product_collector.interfaces.amazon_page_provider import IAmazonProductPageProvider
 from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.amazon_product_collector.interfaces.product_converter import IAmazonProductConvertor
-from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.utils import retry
 from src.main.config import config
 

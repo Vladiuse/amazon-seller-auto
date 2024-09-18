@@ -5,10 +5,6 @@ from src.application.amazon.amazon_report_product_collector.dto.product import A
 
 class IAirTableProductSender(ABC):
 
-    @abstractmethod
-    def create_table(self) -> None:
-        raise NotImplementedError
-
 
     @abstractmethod
     def send_products_to_table(self, products: list[AmazonReportProduct]) -> None:

@@ -37,6 +37,9 @@ class UpdateAmazonProductsTableUseCase:
         self._product_sender = product_sender
 
     def update_table(self, products: list[AmazonReportProduct]) -> None:
+        self.__clean_tale()
+        self._product_sender.send_products_to_table(products=products)
+
+    def __clean_tale(self) -> None:
         records = AmazonProductTable.all()
         AmazonProductTable.batch_delete(records)
-        self._product_sender.send_products_to_table(products=products)

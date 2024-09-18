@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import MarketplaceCountry
+
 
 class IAmazonProductPageProvider(ABC):
 

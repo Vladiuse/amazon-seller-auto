@@ -3,7 +3,8 @@ from dataclasses import dataclass
 
 from src.application.amazon.amazon_product_collector.interfaces.amazon_page_provider import IAmazonProductPageProvider
 from src.application.amazon.common.interfaces.amazon_request_sender import IAmazonRequestSender
-from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import MarketplaceCountry
 from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 from src.main.exceptions import MaxTriesError
 

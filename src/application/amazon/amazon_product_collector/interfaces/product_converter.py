@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
-from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import MarketplaceCountry
 
 
 class IAmazonProductConvertor(ABC):

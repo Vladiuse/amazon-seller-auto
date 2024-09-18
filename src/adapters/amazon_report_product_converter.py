@@ -5,7 +5,7 @@ from src.application.amazon.amazon_report_product_collector.dto.product import A
 from src.application.amazon.amazon_report_product_collector.interfaces.report_product_converner import (
     IReportProductConvertor,
 )
-from src.application.amazon.dto import MarketplaceCountry
+from src.application.amazon.common.types import MarketplaceCountry
 
 
 class ReportProductConverter(IReportProductConvertor):

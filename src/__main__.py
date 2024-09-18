@@ -1,18 +1,19 @@
 import logging
 
-from sp_api.base import Marketplaces, ReportType
+from sp_api.base import Marketplaces
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
+from src.adapters.amazon_page_provider import AmazonProductPageFileReader
 from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_converter import AmazonProductConverter
-from src.adapters.amazon_report_product_converter import ReportProductConverter
-from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
-from src.adapters.amazon_reports_collector import AmazonReportTextCollector
-from src.application.airtable_product_sender.dto.product_table import AmazonProductTable
+from src.adapters.amazon_request_sender import AmazonRequestSender
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.application.amazon.amazon_report_product_collector.usecase import CollectFBAInventoryReportProductsUseCase
+from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.utils import get_active_asins
+from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
 
 logging.basicConfig(level=logging.INFO)
 marketplaces = [
@@ -22,21 +23,9 @@ marketplaces = [
     Marketplaces.FR,
     Marketplaces.UK,
 ]
-
-products_from_reports: list[AmazonReportProduct] = []
-
 # Report collect
-for marketplace in marketplaces:
-    logging.info(marketplace)
-    report_type = ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA
-    collector = AmazonReportProductsCollector(
-        # report_collector=AmazonSavedReportCollector(marketplace),  # FOR TEST
-        report_collector=AmazonReportTextCollector(marketplace),
-        report_convertor=ReportProductConverter(),
-    )
-    products = collector.collect(report_type=report_type, marketplace=marketplace)
-    logging.info('collected %s', len(products))
-    products_from_reports.extend(products)
+report_collector = CollectFBAInventoryReportProductsUseCase()
+products_from_reports: list[AmazonReportProduct] = report_collector.collect(marketplaces=marketplaces)
 
 logging.info('Total products collected: %s', len(products_from_reports))
 active_asins = get_active_asins(return_string=True)
@@ -48,7 +37,7 @@ for product in products_from_reports:
 
 logging.info('Total active_products: %s', len(active_products))
 
-# Load rating and reviews
+# get active asins to parse
 unique_asins_to_parse: list[tuple[Asin, MarketplaceCountry]] = []
 for product in active_products:
     asin = Asin(value=product.asin)
@@ -58,26 +47,41 @@ for product in active_products:
 
 logging.info('Total unique_asins_to_parse: %s', len(unique_asins_to_parse))
 
-product_collector = CollectAmazonProductsUseCase(
-    # product_collector=AmazonProductCollectorFromSavedFile(product_convertor=AmazonProductConvertor()),  # FOR TEST
-    product_collector=AmazonProductCollector(product_convertor=AmazonProductConverter()),
+# Load rating and reviews
+amazon_request_sender = AmazonRequestSender()
+product_collector = AmazonProductCollector(
+    product_convertor=AmazonProductConverter(),
+    # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
+    product_page_provider=AmazonProductPageFileReader(),  # TEST
 )
-products_from_pars = product_collector.collect(unique_asins_to_parse)
+product_collector_use_case = CollectAmazonProductsUseCase(
+    product_collector=product_collector,
+)
+products_from_pars = product_collector_use_case.collect(items=unique_asins_to_parse)
 logging.info('Total parsed asins: %s', len(products_from_pars))
 
 # Join data from reports with data from pars
 for product in active_products:
     for product_from_pars in products_from_pars:
-        if product.asin == product_from_pars.asin.value and \
+        if product.asin == product_from_pars.asin and \
                 product.marketplace_country == product_from_pars.marketplace_country:
             product.rating = product_from_pars.rating
             product.rating_reviews = product_from_pars.rating_reviews
+            print('find')
             break
 
+
 # Send data to airtable
-AmazonProductTable.clean_table()
-airtable_sender = AirTableProductSender()
-airtable_sender.send_products_to_table(
-    products=active_products,
+exit()
+update_products_use_case = UpdateAmazonProductsTableUseCase(
+    product_sender=AirTableProductSender(),
 )
+update_products_use_case.update_table(products=active_products)
+
+#
+# AmazonProductTable.clean_table()
+# airtable_sender = AirTableProductSender()
+# airtable_sender.send_products_to_table(
+#     products=active_products,
+# )
 logging.info('\nEnd')

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from src.application.amazon.dto import AsinStr, MarketplaceCountry
+from src.application.amazon.dto import AsinStr
+from src.application.amazon.common.types import MarketplaceCountry
 
 
 @dataclass
