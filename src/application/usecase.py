@@ -12,7 +12,7 @@ from src.application.amazon.amazon_product_collector.usecase import CollectAmazo
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
 from src.application.amazon.amazon_report_product_collector.usecase import CollectFBAInventoryReportProductsUseCase
 from src.application.amazon.common.types import Asin, MarketplaceCountry
-from src.main.config import REPORTS_DIR
+from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 
 
 class CollectProductsAndSendToAirtableUseCase:
@@ -43,7 +43,7 @@ class CollectProductsAndSendToAirtableUseCase:
         product_collector = AmazonProductCollector(
             product_convertor=AmazonProductConverter(),
             # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
-            product_page_provider=AmazonProductPageFileReader(products_dir=REPORTS_DIR),  # TEST
+            product_page_provider=AmazonProductPageFileReader(products_dir=AMAZON_PRODUCT_PAGES_DIR),  # TEST
         )
         product_collector_use_case = CollectAmazonProductsUseCase(
             product_collector=product_collector,
