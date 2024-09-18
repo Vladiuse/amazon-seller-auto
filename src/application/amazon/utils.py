@@ -33,7 +33,7 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseExcep
 
 def save_amazon_product_page(html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> None:
     file_path = os.path.join(AMAZON_PRODUCT_PAGES_DIR,
-                             f'{marketplace_country.country_code}_{asin.value}.html')
+                             f'{marketplace_country.value}_{asin.value}.html')
     with open(file_path, 'w') as file:
         file.write(html)
 
@@ -67,3 +67,14 @@ def get_active_asins(return_string=False) -> list[Asin | str]:
     if return_string:
         return [asin.value for asin in asins]
     return asins
+
+
+def get_marketplace_url(marketplace_country: MarketplaceCountry) -> str:
+    return {
+        'FR': 'https://www.amazon.fr/',
+        'IT': 'https://www.amazon.it/',
+        'DE': 'https://www.amazon.de/',
+        'GB': 'https://www.amazon.co.uk/',
+        'UK': 'https://www.amazon.co.uk/',
+        'ES': 'https://www.amazon.es/',
+    }[marketplace_country.value]

@@ -7,13 +7,13 @@ from src.adapters.amazon_page_provider import AmazonProductPageFileReader
 from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_converter import AmazonProductConverter
 from src.adapters.amazon_request_sender import AmazonRequestSender
+from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
 from src.application.amazon.amazon_report_product_collector.usecase import CollectFBAInventoryReportProductsUseCase
-from src.application.amazon.dto import Asin
 from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.dto import Asin
 from src.application.amazon.utils import get_active_asins
-from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
 
 logging.basicConfig(level=logging.INFO)
 marketplaces = [
@@ -64,24 +64,14 @@ logging.info('Total parsed asins: %s', len(products_from_pars))
 for product in active_products:
     for product_from_pars in products_from_pars:
         if product.asin == product_from_pars.asin and \
-                product.marketplace_country == product_from_pars.marketplace_country:
+                product.marketplace_country.value == product_from_pars.marketplace_country:
             product.rating = product_from_pars.rating
             product.rating_reviews = product_from_pars.rating_reviews
-            print('find')
             break
 
-
 # Send data to airtable
-exit()
 update_products_use_case = UpdateAmazonProductsTableUseCase(
     product_sender=AirTableProductSender(),
 )
 update_products_use_case.update_table(products=active_products)
-
-#
-# AmazonProductTable.clean_table()
-# airtable_sender = AirTableProductSender()
-# airtable_sender.send_products_to_table(
-#     products=active_products,
-# )
 logging.info('\nEnd')

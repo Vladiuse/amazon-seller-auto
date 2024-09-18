@@ -21,4 +21,4 @@ class AmazonProductCollector(IAmazonProductCollector):
 
     def collect(self, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         html = self.product_page_provider.provide(asin=asin, marketplace_country=marketplace_country)
-        return self.product_convertor.convert(html=html, asin=asin, marketplace_country=marketplace_country)
+        return self.product_convertor.convert(html=html, asin=asin.value, marketplace_country=marketplace_country.value)
