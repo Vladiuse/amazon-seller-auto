@@ -43,9 +43,13 @@ class AmazonReport(IAmazonReport):
         data = self.sp_api_reports.get_report(reportId=report_id)
         logging.info(data.payload)
         report = AmazonReportProduct(**data.payload)
-        if report.is_complete():
-            if report.is_document_created():
-                return AmazonReportProduct(**data.payload)
-            raise ReportStatusError
-        logging.error('Report not complete \n %s', data.payload)
-        raise ReportDocumentNotComplete
+        if not report.is_complete():
+            raise ReportDocumentNotComplete
+        if report.is_document_created():
+            return AmazonReportProduct(**data.payload)
+        logging.error('Report not created \n %s', data.payload)
+        raise ReportStatusError
+
+
+
+
