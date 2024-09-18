@@ -3,7 +3,7 @@ import logging
 from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
 
-from src.adapters.amazon_report_creator import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
+from src.adapters.amazon_report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
 from src.adapters.amazon_report_product_converter import ReportProductConverter
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
 from src.adapters.amazon_reports_collector import AmazonReportDocumentTextCollector, AmazonSavedReportDocumentReader

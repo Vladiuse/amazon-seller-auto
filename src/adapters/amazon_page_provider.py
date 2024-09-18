@@ -5,7 +5,6 @@ from src.application.amazon.amazon_product_collector.interfaces.amazon_page_prov
 from src.application.amazon.common.interfaces.amazon_request_sender import IAmazonRequestSender
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.utils import get_marketplace_url
-from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 from src.main.exceptions import MaxTriesError
 
 
@@ -18,8 +17,10 @@ class AmazonProductPageProvider(IAmazonProductPageProvider):
         product_url = f'{marketplace_url}dp/{asin.value}'
         return self.amazon_request_sender.get(url=product_url)
 
-
+@dataclass
 class AmazonProductPageFileReader(IAmazonProductPageProvider):
+
+    products_dir:str
 
     def provide(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
         try:
@@ -28,7 +29,7 @@ class AmazonProductPageFileReader(IAmazonProductPageProvider):
             raise MaxTriesError('provide')
 
     def __read_amazon_product_page_file(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
-        file_path = os.path.join(AMAZON_PRODUCT_PAGES_DIR,
+        file_path = os.path.join(self.products_dir,
                                  f'{marketplace_country.value}_{asin.value}.html')
         if not os.path.exists(file_path):
             raise FileExistsError
