@@ -4,8 +4,7 @@ from time import sleep
 
 from sp_api.base import Marketplaces, ReportType
 
-from src.application.amazon.dto import Asin
-from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR
 from src.main.exceptions import MaxTriesError
 

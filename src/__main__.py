@@ -11,8 +11,7 @@ from src.application.airtable_product_sender.usecase import UpdateAmazonProducts
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
 from src.application.amazon.amazon_report_product_collector.usecase import CollectFBAInventoryReportProductsUseCase
-from src.application.amazon.common.types import MarketplaceCountry
-from src.application.amazon.dto import Asin
+from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.utils import get_active_asins
 
 logging.basicConfig(level=logging.INFO)
@@ -68,7 +67,7 @@ for product in active_products:
             product.rating = product_from_pars.rating
             product.rating_reviews = product_from_pars.rating_reviews
             break
-
+exit()
 # Send data to airtable
 update_products_use_case = UpdateAmazonProductsTableUseCase(
     product_sender=AirTableProductSender(),
