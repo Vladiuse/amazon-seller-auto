@@ -1,14 +1,16 @@
+import logging
+import os
 from time import sleep
 
 from sp_api.base import Marketplaces
+from sp_api.base import ReportType
 
-from src.application.amazon.amazon_report_product_collector.dto.product import MarketplaceCountry
-from src.application.amazon.dto import Asin
-from src.main.config import ACTIVE_ASINS_FILE_PATH
+from src.application.amazon.dto import Asin, MarketplaceCountry
+from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR
 from src.main.exceptions import MaxTriesError
 
 
-def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseException]] = None):
+def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseException]] | None = None):
     if exceptions is None:
         exceptions = []
 
@@ -20,13 +22,28 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: list[type[BaseExcept
                 except Exception as e:
                     if type(e) not in exceptions:
                         raise e
-                    print('Sleeping')
+                    logging.info('Sleeping')
                     sleep(delay)
             raise MaxTriesError(func.__name__)
 
         return wrapper
 
     return decorator
+
+
+def save_amazon_product_page(html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> None:
+    file_path = os.path.join(AMAZON_PRODUCT_PAGES_DIR,
+                             f'{marketplace_country.country_code}_{asin.value}.html')
+    with open(file_path, 'w') as file:
+        file.write(html)
+
+
+def save_amazon_report(report_text: str, report_type: ReportType, marketplace: Marketplaces) -> None:
+    geo = str(marketplace).split('.')[-1]
+    report_file_name = f'{geo}_{report_type.value}.csv'
+    report_file_path = os.path.join(REPORTS_DIR, report_file_name)
+    with open(report_file_path, 'w') as file:
+        file.write(report_text)
 
 
 def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
