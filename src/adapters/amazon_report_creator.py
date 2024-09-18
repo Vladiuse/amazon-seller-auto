@@ -1,20 +1,20 @@
-import requests
 import logging
 from datetime import datetime
+
+import requests
+from requests.exceptions import RequestException
 from sp_api.api import Reports as SpApiReports
-from sp_api.base import ReportType, ProcessingStatus
+from sp_api.base import ProcessingStatus, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
 from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report_creator import (
-    IAmazonReportGetter,
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
+    IAmazonReportGetter,
 )
 from src.application.amazon.utils import retry
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
-
-from requests.exceptions import RequestException
 
 
 class AmazonReportCreator(IAmazonReportCreator):
@@ -89,13 +89,7 @@ class AmazonReportDocumentGetter(IAmazonReportDocumentGetter):
         delay=15,
         exceptions=(RequestException,),
     )
-    def get_report_document_text(self, report_document_url: str) -> str:
-        response = requests.get(report_document_url)
+    def get_report_document_text(self, document_url: str) -> str:
+        response = requests.get(document_url)
         response.raise_for_status()
         return response.text
-
-
-
-
-
-

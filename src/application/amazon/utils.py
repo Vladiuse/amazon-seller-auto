@@ -2,8 +2,7 @@ import logging
 import os
 from time import sleep
 
-from sp_api.base import Marketplaces
-from sp_api.base import ReportType
+from sp_api.base import Marketplaces, ReportType
 
 from src.application.amazon.dto import Asin, MarketplaceCountry
 from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR

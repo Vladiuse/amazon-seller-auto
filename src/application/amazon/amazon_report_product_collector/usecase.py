@@ -1,3 +1,5 @@
+import logging
+
 from sp_api.api import Reports as SpApiReports
 from sp_api.base import ReportType
 
@@ -64,11 +66,10 @@ class GetExitingOrCreateAmazonReportUseCase:
             report_getter=self._report_getter,
         ).get_exiting_report(report_type=report_type)
         if exiting_report is not None:
+            logging.info('Get exiting report')
             return exiting_report
         return CreateAmazonReportUseCase(
             sp_api_reports=self._sp_api_reports,
             report_creator=self._report_creator,
             report_getter=self._report_getter,
         ).create_report(report_type=report_type)
-
-
