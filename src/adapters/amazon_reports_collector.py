@@ -39,12 +39,11 @@ class AmazonReportDocumentTextCollector(IAmazonReportCollector):
         return report_document_text
 
 
-class AmazonSavedReportDocumentCollectorCollector(IAmazonReportCollector):
-
-    def __init__(self, sp_api_reports: SpApiReports):
-        self._sp_api_reports = sp_api_reports
+@dataclass
+class AmazonSavedReportDocumentReader(IAmazonReportCollector):
+    sp_api_reports: SpApiReports
 
     def collect(self, report_type: ReportType, save_report: bool = False) -> str:
-        report_file_path = os.path.join(REPORTS_DIR, f'{self._sp_api_reports.marketplace_id}_{report_type.value}.csv')
+        report_file_path = os.path.join(REPORTS_DIR, f'{self.sp_api_reports.marketplace_id}_{report_type.value}.csv')
         with open(report_file_path) as file:
             return file.read()

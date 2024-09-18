@@ -12,7 +12,7 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
 from src.application.amazon.amazon_report_product_collector.interfaces.report_product_converner import (
     IReportProductConvertor,
 )
-from src.application.amazon.utils import get_get_by_marketplace_id
+from src.application.amazon.utils import get_marketplace_by_id
 
 
 @dataclass
@@ -22,7 +22,7 @@ class AmazonReportProductsCollector(IAmazonReportProductsCollector):
 
     def collect(self, report_type: ReportType, marketplace: Marketplaces) -> list[AmazonReportProduct]:
         report_text = self.report_collector.collect(report_type=report_type, save_report=True)
-        marketplace_country = get_get_by_marketplace_id(marketplace)
+        marketplace_country = get_marketplace_by_id(marketplace)
         return self.report_convertor.convert(
             report_document_text=report_text,
             marketplace_country=marketplace_country,

@@ -21,16 +21,3 @@ class AmazonProductCollector(IAmazonProductCollector):
     def collect(self, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonProduct:
         html = self.product_page_provider.provide(asin=asin, marketplace_country=marketplace_country)
         return self.product_convertor.convert(html=html, asin=asin, marketplace_country=marketplace_country)
-
-    @retry(
-        attempts=5,
-        delay=5,
-        exceptions=(HTTPError,),
-    )
-    def get_amazon_product_page(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
-        client = ZenRowsClient(config.zenrows_config.ZENROWS_API_KEY)
-        url = f'{marketplace_country.url}dp/{asin.value}'
-        response = client.get(url)
-        logging.info('%s\nresponse status_code: %s', url, response.status_code)
-        response.raise_for_status()
-        return response.text

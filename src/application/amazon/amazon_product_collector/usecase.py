@@ -13,11 +13,14 @@ class CollectAmazonProductsUseCase:
 
     def collect(self, items: list[tuple[Asin, MarketplaceCountry]]) -> list[AmazonProduct]:
         products = []
+        products_errors = 0
         for asin, marketplace_country in items:
             try:
                 product = self._product_collector.collect(asin=asin, marketplace_country=marketplace_country)
                 logging.info(product)
                 products.append(product)
             except (ParserError, MaxTriesError) as e:
-                logging.error(e)  # TODO no error text
+                logging.error(str(e))
+                products_errors += 1
+        logging.error('Cant get products pages: %s', products_errors)
         return products

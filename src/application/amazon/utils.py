@@ -23,7 +23,7 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseExcep
                         raise e
                     logging.info('Sleeping')
                     sleep(delay)
-            raise MaxTriesError(func.__name__)
+            raise MaxTriesError(f'func_name: {func.__name__}')
 
         return wrapper
 
@@ -44,7 +44,7 @@ def save_amazon_report(report_text: str, report_type: ReportType, marketplace_id
         file.write(report_text)
 
 
-def get_get_by_marketplace_id(marketplace: Marketplaces) -> MarketplaceCountry:
+def get_marketplace_by_id(marketplace: Marketplaces) -> MarketplaceCountry:
     key = {
         'A13V1IB3VIYZZH': 'FR',
         'A1RKKUPIHCS9HS': 'ES',
