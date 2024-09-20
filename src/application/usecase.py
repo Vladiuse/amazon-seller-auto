@@ -6,7 +6,7 @@ from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.amazon_page_provider import AmazonProductPageFileReader
 from src.adapters.amazon_product_collector import AmazonProductCollector
 from src.adapters.amazon_product_converter import AmazonProductConverter
-from src.adapters.amazon_request_sender import AmazonRequestSender
+from src.adapters.amazon_request_sender import AmazonZenRowsRequestSender
 from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
 from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
@@ -39,7 +39,7 @@ class CollectProductsAndSendToAirtableUseCase:
         logging.info('Total unique_asins_to_parse: %s', len(unique_asins_to_parse))
 
         # Load rating and reviews
-        amazon_request_sender = AmazonRequestSender()
+        amazon_request_sender = AmazonZenRowsRequestSender()
         product_collector = AmazonProductCollector(
             product_convertor=AmazonProductConverter(),
             # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),

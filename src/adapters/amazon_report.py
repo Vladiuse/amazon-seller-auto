@@ -7,7 +7,7 @@ from sp_api.api import Reports as SpApiReports
 from sp_api.base import ProcessingStatus, ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
+from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, AmazonReportDocument
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
@@ -80,9 +80,9 @@ class AmazonReportDocumentGetter(IAmazonReportDocumentGetter):
         delay=20,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def get_report_document(self, document_id: str) -> ReportDocument:
+    def get_report_document(self, document_id: str) -> AmazonReportDocument:
         data = self.sp_api_reports.get_report_document(reportDocumentId=document_id)
-        return ReportDocument(**data.payload)
+        return AmazonReportDocument(**data.payload)
 
     @retry(
         attempts=3,

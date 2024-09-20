@@ -20,6 +20,6 @@ class AmazonReport(BaseModel):
         return self.processing_status == ProcessingStatus.DONE
 
 
-class ReportDocument(BaseModel):
+class AmazonReportDocument(BaseModel):
     id: str = Field(alias='reportDocumentId')
     url: str

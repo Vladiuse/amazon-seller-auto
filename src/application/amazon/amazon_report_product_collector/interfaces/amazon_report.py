@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from sp_api.base import ReportType
 
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, ReportDocument
+from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, AmazonReportDocument
 
 
 class IAmazonReportCreator(ABC):
@@ -25,7 +25,7 @@ class IAmazonReportGetter(ABC):
 class IAmazonReportDocumentGetter(ABC):
 
     @abstractmethod
-    def get_report_document(self, document_id: str) -> ReportDocument:
+    def get_report_document(self, document_id: str) -> AmazonReportDocument:
         raise NotImplementedError
 
     @abstractmethod

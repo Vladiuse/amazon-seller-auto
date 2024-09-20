@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from sp_api.api import Reports as SpApiReports
 from sp_api.base import ReportType
 
+from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReportDocument
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
@@ -11,32 +12,63 @@ from src.application.amazon.amazon_report_product_collector.interfaces.amazon_re
 )
 from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
     IAmazonReportCollector,
+    IAmazonReportDocumentProductCollector,
 )
-from src.application.amazon.utils import save_amazon_report
+from src.application.amazon.common.interfaces.amazon_request_sender import (
+    IAmazonRequestSender,
+)
 from src.main.config import REPORTS_DIR
+
+#
+# @dataclass
+# class AmazonReportDocumentTextCollector(IAmazonReportCollector):
+#     sp_api_reports: SpApiReports
+#     report_creator: IAmazonReportCreator
+#     report_getter: IAmazonReportGetter
+#     report_document_getter: IAmazonReportDocumentGetter
+#
+#     def collect(self, report_type: ReportType, save_report: bool = False) -> str:
+#         exiting_reports = self.report_getter.get_today_reports(report_type=report_type)
+#         if len(exiting_reports) != 0:
+#             report = max(exiting_reports, key=lambda report: report.created)
+#         else:
+#             report_id = self.report_creator.create_report(report_type=report_type)
+#             report = self.report_getter.get_report(report_id=report_id)
+#         report_document = self.report_document_getter.get_report_document(document_id=report.document_id)
+#         report_document_text = self.report_document_getter.get_report_document_text(document_url=report_document.url)
+#         if save_report:
+#             save_amazon_report(report_text=report_document_text,
+#                                report_type=report_type,
+#                                marketplace_id=self.sp_api_reports.marketplace_id)
+#         return report_document_text
 
 
 @dataclass
-class AmazonReportDocumentTextCollector(IAmazonReportCollector):
+class AmazonReportDocumentCollector(IAmazonReportCollector):
     sp_api_reports: SpApiReports
     report_creator: IAmazonReportCreator
     report_getter: IAmazonReportGetter
     report_document_getter: IAmazonReportDocumentGetter
 
-    def collect(self, report_type: ReportType, save_report: bool = False) -> str:
+    def collect(self, report_type: ReportType) -> AmazonReportDocument:
         exiting_reports = self.report_getter.get_today_reports(report_type=report_type)
         if len(exiting_reports) != 0:
             report = max(exiting_reports, key=lambda report: report.created)
         else:
             report_id = self.report_creator.create_report(report_type=report_type)
             report = self.report_getter.get_report(report_id=report_id)
-        report_document = self.report_document_getter.get_report_document(document_id=report.document_id)
-        report_document_text = self.report_document_getter.get_report_document_text(document_url=report_document.url)
-        if save_report:
-            save_amazon_report(report_text=report_document_text,
-                               report_type=report_type,
-                               marketplace_id=self.sp_api_reports.marketplace_id)
-        return report_document_text
+        return self.report_document_getter.get_report_document(document_id=report.document_id)
+
+
+@dataclass
+class AmazonReportDocumentProductCollector(IAmazonReportDocumentProductCollector):
+    amazon_request_sender: IAmazonRequestSender
+
+    def collect(self, report_document: AmazonReportDocument) -> list:
+        content = self.amazon_request_sender.get(report_document.url)
+        request_content_converter =
+        report_document_converter =
+        return self.content_converter.convert(content=content)
 
 
 @dataclass
