@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
-from src.application.amazon.amazon_product_collector.interfaces.amazon_page_provider import IAmazonProductPageProvider
-from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
-from src.application.amazon.amazon_product_collector.interfaces.product_converter import IAmazonProductConvertor
+from src.application.amazon.pages.dto.product import AmazonProduct
+from src.application.amazon.pages.interfaces.page_provider import IAmazonProductPageProvider
+from src.application.amazon.pages.interfaces.product_collector import IAmazonProductCollector
+from src.application.amazon.pages.interfaces.product_converter import IAmazonProductConvertor
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 
 

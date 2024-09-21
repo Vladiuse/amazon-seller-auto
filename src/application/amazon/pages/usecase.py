@@ -1,7 +1,7 @@
 import logging
 
-from src.application.amazon.amazon_product_collector.dto.product import AmazonProduct
-from src.application.amazon.amazon_product_collector.interfaces.product_collector import IAmazonProductCollector
+from src.application.amazon.pages.dto.product import AmazonProduct
+from src.application.amazon.pages.interfaces.product_collector import IAmazonProductCollector
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.exceptions import MaxTriesError, ParserError
 

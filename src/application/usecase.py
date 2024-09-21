@@ -3,14 +3,14 @@ import logging
 from sp_api.base import Marketplaces
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
-from src.adapters.amazon_page_provider import AmazonProductPageFileReader
-from src.adapters.amazon_product_collector import AmazonProductCollector
-from src.adapters.amazon_product_converter import AmazonProductConverter
+from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
+from src.adapters.amazon.pages.product_collector import AmazonProductCollector
+from src.adapters.amazon.pages.product_converter import AmazonProductConverter
 from src.adapters.amazon_request_sender import AmazonZenRowsRequestSender
 from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
-from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
-from src.application.amazon.amazon_reports.usecase import CollectFBAInventoryReportProductsUseCase
+from src.application.amazon.pages.usecase import CollectAmazonProductsUseCase
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
+from src.application.amazon.reports.usecase import CollectFBAInventoryReportProductsUseCase
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 

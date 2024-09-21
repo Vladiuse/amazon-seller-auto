@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
 
 
 class IAirTableProductSender(ABC):

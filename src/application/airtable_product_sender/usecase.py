@@ -3,7 +3,7 @@ from src.application.airtable_product_sender.dto.product_table import AirTableRe
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.application.airtable_product_sender.types import AirTableField, AirTableFieldType
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
 
 
 class CreateAmazonProductsTableUseCase:

@@ -5,11 +5,11 @@ import requests
 from requests.exceptions import RequestException
 from sp_api.api import Reports as SpApiReports
 from sp_api.base import ProcessingStatus, ReportType as SPReportType
-from src.application.amazon.amazon_reports.types import ReportType
+from src.application.amazon.reports.types import ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon.amazon_reports.dto.report import AmazonReport, AmazonReportDocument
-from src.application.amazon.amazon_reports.interfaces.amazon_report import (
+from src.application.amazon.reports.dto.report import AmazonReport, AmazonReportDocument
+from src.application.amazon.reports.interfaces.report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
     IAmazonReportGetter,

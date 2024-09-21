@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.application.amazon.amazon_reports.dto.report import AmazonReport, AmazonReportDocument
-from src.application.amazon.amazon_reports.types import ReportType
+from src.application.amazon.reports.dto.report import AmazonReport, AmazonReportDocument
+from src.application.amazon.reports.types import ReportType
 
 
 class IAmazonReportCreator(ABC):

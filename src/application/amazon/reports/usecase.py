@@ -3,11 +3,11 @@ import logging
 from sp_api.api import Reports
 from sp_api.base import Marketplaces, ReportType
 
-from src.adapters.amazon_report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
-from src.adapters.amazon_report_product_converter import FBAReportDocumentConverter
+from src.adapters.amazon.reports.report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
+from src.adapters.report_product_converner import InventoryReportDocumentConverter
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
-from src.adapters.amazon_reports_collector import AmazonReportDocumentProvider,AmazonReportDocumentProductProvider, AmazonSavedReportDocumentReader
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
+from src.adapters.amazon_reports_collector import AmazonInventoryReportDocumentProvider,AmazonReportDocumentProductProvider, AmazonSavedReportDocumentReader
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
 from src.main.config import config
 from src.adapters.amazon_request_sender import AmazonRequestsRequestSender
 
@@ -28,7 +28,7 @@ class CollectFBAInventoryReportProductsUseCase:
             report_creator = AmazonReportCreator(sp_api_reports=sp_api_reports)
             report_document_getter = AmazonReportDocumentGetter(sp_api_reports=sp_api_reports)
 
-            report_document_collector = AmazonReportDocumentProvider(
+            report_document_collector = AmazonInventoryReportDocumentProvider(
                 sp_api_reports=sp_api_reports,
                 report_getter=reports_getter,
                 report_creator=report_creator,
@@ -38,7 +38,7 @@ class CollectFBAInventoryReportProductsUseCase:
                 amazon_request_sender=AmazonRequestsRequestSender(),
 
             )
-            report_convertor = FBAReportDocumentConverter()
+            report_convertor = InventoryReportDocumentConverter()
             report_product_collector = AmazonReportProductsCollector(
                 report_convertor=report_convertor,
                 # report_collector=report_text_collector,

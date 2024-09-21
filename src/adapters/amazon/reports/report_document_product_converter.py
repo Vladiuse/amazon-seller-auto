@@ -1,22 +1,19 @@
 import csv
-import gzip
 import io
 import json
 
-from sp_api.base import ReportType
-
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
-from src.application.amazon.amazon_reports.interfaces.report_product_converner import (
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
+from src.application.amazon.reports.interfaces.report_product_converner import (
     IReportProductConvertor,
     ISalesReportDocumentConvertor,
 )
 from src.application.amazon.common.types import MarketplaceCountry
 
 
+class InventoryReportDocumentConverter(IReportProductConvertor):
 
-class FBAReportDocumentConverter(IReportProductConvertor):
-
-    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[AmazonInventoryReportProduct]:
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[
+        AmazonInventoryReportProduct]:
         products = []
         reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
         for row in reader:
@@ -48,16 +45,3 @@ class SalesReportDocumentConvertor(ISalesReportDocumentConvertor):
             )
             products.append(sale_report_product)
         return products
-
-
-def get_report_converters(report_type: ReportType) -> object:
-    return {
-        ReportType.GET_FBA_MYI_ALL_INVENTORY_DATA: {
-            'content_converter': 'xxx',
-            'converter': 'xxx',
-        },
-        ReportType.GET_SALES_AND_TRAFFIC_REPORT: {
-            'content_converter': 'xxx',
-            'converter': 'xxx',
-        },
-    }[report_type]

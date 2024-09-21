@@ -1,5 +1,5 @@
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
-from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
 
 from .tables.models import AmazonProductTable
 

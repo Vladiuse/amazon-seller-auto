@@ -3,7 +3,7 @@ import os
 from time import sleep
 
 from sp_api.base import Marketplaces as SpMarketplaces, ReportType as SpReportType
-from src.application.amazon.amazon_reports.types import ReportType
+from src.application.amazon.reports.types import ReportType
 
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR
@@ -38,8 +38,13 @@ def save_amazon_product_page(html: str, asin: Asin, marketplace_country: Marketp
         file.write(html)
 
 
-def save_amazon_report(report_document_text: str, report_type: ReportType, marketplace_country: MarketplaceCountry) -> None:
-    report_file_name = f'{marketplace_country.value}_{report_type.value}.csv'
+def save_amazon_report(
+        report_document_text: str,
+        report_type: ReportType,
+        marketplace_country: MarketplaceCountry,
+        output_file_format: str,
+) -> None:
+    report_file_name = f'{marketplace_country.value}_{report_type.value.value}.{output_file_format}'
     report_file_path = os.path.join(REPORTS_DIR, report_file_name)
     with open(report_file_path, 'w') as file:
         file.write(report_document_text)
