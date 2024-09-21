@@ -4,40 +4,45 @@ from datetime import datetime
 import requests
 from requests.exceptions import RequestException
 from sp_api.api import Reports as SpApiReports
-from sp_api.base import ProcessingStatus, ReportType as SPReportType
-from src.application.amazon.reports.types import ReportType
+from sp_api.base import Marketplaces as SpMarketplaces
+from sp_api.base import ProcessingStatus
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.report import AmazonReport, AmazonReportDocument
 from src.application.amazon.reports.interfaces.report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
     IAmazonReportGetter,
 )
+from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import retry
+from src.main.config import config
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
+
+amazon_credentials = {
+    'refresh_token': config.amazon_config.SP_API_REFRESH_TOKEN,
+    'lwa_app_id': config.amazon_config.LWA_CLIENT_ID,
+    'lwa_client_secret': config.amazon_config.LWA_CLIENT_SECRET,
+}
 
 
 class AmazonReportCreator(IAmazonReportCreator):
-
-    def __init__(self, sp_api_reports: SpApiReports):
-        self.sp_api_reports = sp_api_reports
 
     @retry(
         attempts=5,
         delay=3 * 60,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def create_report(self, report_type: ReportType, **kwargs) -> str:
-        data = self.sp_api_reports.create_report(reportType=report_type.value, **kwargs)
+    def create_report(self, marketplace_country: MarketplaceCountry, report_type: ReportType, **kwargs) -> str:
+        marketplace = getattr(SpMarketplaces, marketplace_country.value)
+        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        data = sp_api_reports.create_report(reportType=report_type.value, **kwargs)
         logging.info(data.payload)
         return data.payload['reportId']
 
 
 class AmazonReportGetter(IAmazonReportGetter):
-
-    def __init__(self, sp_api_reports: SpApiReports):
-        self._sp_api_reports = sp_api_reports
 
     @retry(
         attempts=20,
@@ -45,7 +50,8 @@ class AmazonReportGetter(IAmazonReportGetter):
         exceptions=(ReportDocumentNotComplete,),
     )
     def get_report(self, report_id: str) -> AmazonReport:
-        data = self._sp_api_reports.get_report(reportId=report_id)
+        sp_api_reports = SpApiReports(credentials=amazon_credentials)
+        data = sp_api_reports.get_report(reportId=report_id)
         logging.info(data.payload)
         report = AmazonReport(**data.payload)
         if not report.is_complete():
@@ -60,9 +66,11 @@ class AmazonReportGetter(IAmazonReportGetter):
         delay=10,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
+    def get_today_reports(self, marketplace_country: MarketplaceCountry, report_type: ReportType) -> list[AmazonReport]:
+        marketplace = getattr(SpMarketplaces, marketplace_country.value)
+        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
         date = datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat()
-        data = self._sp_api_reports.get_reports(
+        data = sp_api_reports.get_reports(
             reportTypes=[report_type.value, ],
             processingStatuses=[ProcessingStatus.DONE, ],
             createdSince=date,
@@ -73,16 +81,15 @@ class AmazonReportGetter(IAmazonReportGetter):
 
 class AmazonReportDocumentGetter(IAmazonReportDocumentGetter):
 
-    def __init__(self, sp_api_reports: SpApiReports):
-        self.sp_api_reports = sp_api_reports
-
     @retry(
         attempts=3,
         delay=20,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def get_report_document(self, document_id: str) -> AmazonReportDocument:
-        data = self.sp_api_reports.get_report_document(reportDocumentId=document_id)
+    def get_report_document(self, marketplace_country:MarketplaceCountry ,document_id: str) -> AmazonReportDocument:
+        marketplace = getattr(SpMarketplaces, marketplace_country.value)
+        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        data = sp_api_reports.get_report_document(reportDocumentId=document_id)
         return AmazonReportDocument(**data.payload)
 
     @retry(
