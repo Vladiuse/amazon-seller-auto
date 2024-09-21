@@ -94,7 +94,7 @@ class SalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
         pass
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
-        report_file_name = f'{marketplace_country.value}_{ReportType.SALES.value.value}.csv'
+        report_file_name = f'{marketplace_country.value}_{ReportType.SALES.value.value}.json'
         report_path = os.path.join(REPORTS_DIR, report_file_name)
         with open(report_path) as file:
             report_document_text = file.read()
