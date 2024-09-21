@@ -5,34 +5,22 @@ import json
 
 from sp_api.base import ReportType
 
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct, SaleReportProduct
-from src.application.amazon.amazon_report_product_collector.interfaces.report_product_converner import (
+from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
+from src.application.amazon.amazon_reports.interfaces.report_product_converner import (
     IReportProductConvertor,
-    IRequestContentConverter,
     ISalesReportDocumentConvertor,
 )
 from src.application.amazon.common.types import MarketplaceCountry
 
 
-class RequestGZipContentConverter(IRequestContentConverter):
-
-    def convert(self, content: bytes) -> str:
-        return gzip.decompress(content).decode('utf-8')
-
-
-class RequestTextContentConverter(IRequestContentConverter):
-
-    def convert(self, content: bytes) -> str:
-        return content.decode('utf-8')
-
 
 class FBAReportDocumentConverter(IReportProductConvertor):
 
-    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[AmazonReportProduct]:
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[AmazonInventoryReportProduct]:
         products = []
         reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
         for row in reader:
-            product = AmazonReportProduct(
+            product = AmazonInventoryReportProduct(
                 asin=row['asin'],
                 name=row['product-name'],
                 marketplace_country=marketplace_country,

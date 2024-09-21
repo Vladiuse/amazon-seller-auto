@@ -1,81 +1,66 @@
+import logging
 import os
 from dataclasses import dataclass
 
 from sp_api.api import Reports as SpApiReports
-from sp_api.base import ReportType
+from sp_api.base import ReportType as SpReportType, Marketplaces as SpMarketplaces
+from src.application.amazon.amazon_reports.dto.product import AmazonReportProduct
 
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReportDocument
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
+from src.application.amazon.amazon_reports.types import ReportType
+from src.application.amazon.amazon_reports.dto.report import AmazonReportDocument
+from src.application.amazon.amazon_reports.interfaces.amazon_report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
     IAmazonReportGetter,
 )
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_reports_collector import (
-    IAmazonReportCollector,
-    IAmazonReportDocumentProductCollector,
+from src.application.amazon.amazon_reports.interfaces.amazon_reports_collector import (
+    IAmazonReportProvider,
+    IAmazonReportDocumentProductProvider,
 )
 from src.application.amazon.common.interfaces.amazon_request_sender import (
     IAmazonRequestSender,
 )
 from src.main.config import REPORTS_DIR
-
-#
-# @dataclass
-# class AmazonReportDocumentTextCollector(IAmazonReportCollector):
-#     sp_api_reports: SpApiReports
-#     report_creator: IAmazonReportCreator
-#     report_getter: IAmazonReportGetter
-#     report_document_getter: IAmazonReportDocumentGetter
-#
-#     def collect(self, report_type: ReportType, save_report: bool = False) -> str:
-#         exiting_reports = self.report_getter.get_today_reports(report_type=report_type)
-#         if len(exiting_reports) != 0:
-#             report = max(exiting_reports, key=lambda report: report.created)
-#         else:
-#             report_id = self.report_creator.create_report(report_type=report_type)
-#             report = self.report_getter.get_report(report_id=report_id)
-#         report_document = self.report_document_getter.get_report_document(document_id=report.document_id)
-#         report_document_text = self.report_document_getter.get_report_document_text(document_url=report_document.url)
-#         if save_report:
-#             save_amazon_report(report_text=report_document_text,
-#                                report_type=report_type,
-#                                marketplace_id=self.sp_api_reports.marketplace_id)
-#         return report_document_text
+from src.application.amazon.utils import save_amazon_report, get_marketplace_country
+from src.adapters.amazon_report_product_converter import FBAReportDocumentConverter
 
 
 @dataclass
-class AmazonReportDocumentCollector(IAmazonReportCollector):
-    sp_api_reports: SpApiReports
+class AmazonReportDocumentProvider(IAmazonReportProvider):
     report_creator: IAmazonReportCreator
     report_getter: IAmazonReportGetter
     report_document_getter: IAmazonReportDocumentGetter
 
-    def collect(self, report_type: ReportType) -> AmazonReportDocument:
+    def provide(self, report_type: ReportType, **kwargs) -> AmazonReportDocument:
         exiting_reports = self.report_getter.get_today_reports(report_type=report_type)
         if len(exiting_reports) != 0:
             report = max(exiting_reports, key=lambda report: report.created)
+            logging.info('Get exiting report %s', report_type.value)
         else:
-            report_id = self.report_creator.create_report(report_type=report_type)
+            report_id = self.report_creator.create_report(report_type=report_type, **kwargs)
             report = self.report_getter.get_report(report_id=report_id)
         return self.report_document_getter.get_report_document(document_id=report.document_id)
 
 
 @dataclass
-class AmazonReportDocumentProductCollector(IAmazonReportDocumentProductCollector):
+class AmazonInventoryReportDocumentProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
+    amazon_report_document_provider: IAmazonReportProvider
 
-    def collect(self, report_document: AmazonReportDocument) -> list:
-        content = self.amazon_request_sender.get(report_document.url)
-        request_content_converter =
-        report_document_converter =
-        return self.content_converter.convert(content=content)
+    def collect(self, report_document: AmazonReportDocument, marketplace: SpMarketplaces) -> list[AmazonReportProduct]:
+        report_type = ReportType.INVENTORY
+        marketplace_country = get_marketplace_country(marketplace)
+        report_document = self.amazon_report_document_provider.provide(
+            report_type=report_type,
+        )
+        report_document_content = self.amazon_request_sender.get(report_document.url)
+        report_document_text = report_document_content.decode('utf-8')
+        save_amazon_report(
+            report_document_text=report_document_text,
+            marketplace_country=marketplace_country,
+            report_type=report_type,
+        )
+        converter = FBAReportDocumentConverter()
+        return converter.convert(report_document_text=report_document_text, marketplace_country=marketplace_country)
 
 
-@dataclass
-class AmazonSavedReportDocumentReader(IAmazonReportCollector):
-    sp_api_reports: SpApiReports
-
-    def collect(self, report_type: ReportType, save_report: bool = False) -> str:
-        report_file_path = os.path.join(REPORTS_DIR, f'{self.sp_api_reports.marketplace_id}_{report_type.value}.csv')
-        with open(report_file_path) as file:
-            return file.read()

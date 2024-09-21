@@ -4,11 +4,12 @@ from datetime import datetime
 import requests
 from requests.exceptions import RequestException
 from sp_api.api import Reports as SpApiReports
-from sp_api.base import ProcessingStatus, ReportType
+from sp_api.base import ProcessingStatus, ReportType as SPReportType
+from src.application.amazon.amazon_reports.types import ReportType
 from sp_api.base.exceptions import SellingApiRequestThrottledException
 
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, AmazonReportDocument
-from src.application.amazon.amazon_report_product_collector.interfaces.amazon_report import (
+from src.application.amazon.amazon_reports.dto.report import AmazonReport, AmazonReportDocument
+from src.application.amazon.amazon_reports.interfaces.amazon_report import (
     IAmazonReportCreator,
     IAmazonReportDocumentGetter,
     IAmazonReportGetter,
@@ -27,8 +28,8 @@ class AmazonReportCreator(IAmazonReportCreator):
         delay=3 * 60,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def create_report(self, report_type: ReportType) -> str:
-        data = self.sp_api_reports.create_report(reportType=report_type)
+    def create_report(self, report_type: ReportType, **kwargs) -> str:
+        data = self.sp_api_reports.create_report(reportType=report_type.value, **kwargs)
         logging.info(data.payload)
         return data.payload['reportId']
 
@@ -62,7 +63,7 @@ class AmazonReportGetter(IAmazonReportGetter):
     def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
         date = datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat()
         data = self._sp_api_reports.get_reports(
-            reportTypes=[report_type, ],
+            reportTypes=[report_type.value, ],
             processingStatuses=[ProcessingStatus.DONE, ],
             createdSince=date,
         )

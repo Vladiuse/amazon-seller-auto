@@ -16,12 +16,12 @@ class AmazonZenRowsRequestSender(IAmazonRequestSender):
         delay=10,
         exceptions=(HTTPError,),
     )
-    def get(self, url: str) -> str:
+    def get(self, url: str) -> bytes:
         client = ZenRowsClient(config.zenrows_config.ZENROWS_API_KEY)
         response = client.get(url)
         logging.info('Url: %s\nresponse status_code: %s', url, response.status_code)
         response.raise_for_status()
-        return response.text
+        return response.content
 
 
 class AmazonRequestsRequestSender(IAmazonRequestSender):
@@ -31,8 +31,8 @@ class AmazonRequestsRequestSender(IAmazonRequestSender):
         delay=10,
         exceptions=(HTTPError,),
     )
-    def get(self, url: str) -> requests.Response:
+    def get(self, url: str) -> bytes:
         response = requests.get(url)
         logging.info('Url: %s\nresponse status_code: %s', url, response.status_code)
         response.raise_for_status()
-        return response
+        return response.content

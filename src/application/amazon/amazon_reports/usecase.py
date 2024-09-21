@@ -6,15 +6,15 @@ from sp_api.base import Marketplaces, ReportType
 from src.adapters.amazon_report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
 from src.adapters.amazon_report_product_converter import FBAReportDocumentConverter
 from src.adapters.amazon_report_products_collector import AmazonReportProductsCollector
-from src.adapters.amazon_reports_collector import AmazonReportDocumentCollector,AmazonReportDocumentProductCollector, AmazonSavedReportDocumentReader
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.adapters.amazon_reports_collector import AmazonReportDocumentProvider,AmazonReportDocumentProductProvider, AmazonSavedReportDocumentReader
+from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
 from src.main.config import config
 from src.adapters.amazon_request_sender import AmazonRequestsRequestSender
 
 
 class CollectFBAInventoryReportProductsUseCase:
 
-    def collect(self, marketplaces: list[Marketplaces]) -> list[AmazonReportProduct]:
+    def collect(self, marketplaces: list[Marketplaces]) -> list[AmazonInventoryReportProduct]:
         amazon_credentials = {
             'refresh_token': config.amazon_config.SP_API_REFRESH_TOKEN,
             'lwa_app_id': config.amazon_config.LWA_CLIENT_ID,
@@ -28,13 +28,13 @@ class CollectFBAInventoryReportProductsUseCase:
             report_creator = AmazonReportCreator(sp_api_reports=sp_api_reports)
             report_document_getter = AmazonReportDocumentGetter(sp_api_reports=sp_api_reports)
 
-            report_document_collector = AmazonReportDocumentCollector(
+            report_document_collector = AmazonReportDocumentProvider(
                 sp_api_reports=sp_api_reports,
                 report_getter=reports_getter,
                 report_creator=report_creator,
                 report_document_getter=report_document_getter,
             )
-            report_document_text_collector = AmazonReportDocumentProductCollector(
+            report_document_text_collector = AmazonReportDocumentProductProvider(
                 amazon_request_sender=AmazonRequestsRequestSender(),
 
             )

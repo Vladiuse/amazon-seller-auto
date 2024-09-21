@@ -2,7 +2,8 @@ import logging
 import os
 from time import sleep
 
-from sp_api.base import Marketplaces, ReportType
+from sp_api.base import Marketplaces as SpMarketplaces, ReportType as SpReportType
+from src.application.amazon.amazon_reports.types import ReportType
 
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR
@@ -37,22 +38,21 @@ def save_amazon_product_page(html: str, asin: Asin, marketplace_country: Marketp
         file.write(html)
 
 
-def save_amazon_report(report_text: str, report_type: ReportType, marketplace_id: str) -> None:
-    report_file_name = f'{marketplace_id}_{report_type.value}.csv'
+def save_amazon_report(report_document_text: str, report_type: ReportType, marketplace_country: MarketplaceCountry) -> None:
+    report_file_name = f'{marketplace_country.value}_{report_type.value}.csv'
     report_file_path = os.path.join(REPORTS_DIR, report_file_name)
     with open(report_file_path, 'w') as file:
-        file.write(report_text)
+        file.write(report_document_text)
 
 
-def get_marketplace_by_id(marketplace: Marketplaces) -> MarketplaceCountry:
-    key = {
-        'A13V1IB3VIYZZH': 'FR',
-        'A1RKKUPIHCS9HS': 'ES',
-        'A1PA6795UKMFR9': 'DE',
-        'APJ6JRA9NG5V4': 'IT',
-        'A1F83G8C2ARO7P': 'UK',
-    }[marketplace.marketplace_id]
-    return getattr(MarketplaceCountry, key)
+def get_marketplace_country(marketplace: SpMarketplaces) -> MarketplaceCountry:
+    return {
+        SpMarketplaces.FR: MarketplaceCountry.FR,
+        SpMarketplaces.ES: MarketplaceCountry.ES,
+        SpMarketplaces.DE: MarketplaceCountry.DE,
+        SpMarketplaces.IT: MarketplaceCountry.IT,
+        SpMarketplaces.UK: MarketplaceCountry.UK,
+    }[marketplace]
 
 
 def get_active_asins(return_string=False) -> list[Asin | str]:

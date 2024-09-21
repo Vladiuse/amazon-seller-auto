@@ -1,12 +1,12 @@
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
 
 from .tables.models import AmazonProductTable
 
 
 class AirTableProductSender(IAirTableProductSender):
 
-    def send_products_to_table(self, products: list[AmazonReportProduct]) -> None:
+    def send_products_to_table(self, products: list[AmazonInventoryReportProduct]) -> None:
         products_to_send = []
         for product in products:
             product_to_send = AmazonProductTable(

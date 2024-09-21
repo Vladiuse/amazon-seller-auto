@@ -3,7 +3,7 @@ from src.application.airtable_product_sender.dto.product_table import AirTableRe
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.application.airtable_product_sender.types import AirTableField, AirTableFieldType
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
+from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
 
 
 class CreateAmazonProductsTableUseCase:
@@ -36,7 +36,7 @@ class UpdateAmazonProductsTableUseCase:
     def __init__(self, product_sender: IAirTableProductSender):
         self._product_sender = product_sender
 
-    def update_table(self, products: list[AmazonReportProduct]) -> None:
+    def update_table(self, products: list[AmazonInventoryReportProduct]) -> None:
         self.__clean_tale()
         self._product_sender.send_products_to_table(products=products)
 

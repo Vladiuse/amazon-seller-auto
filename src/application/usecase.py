@@ -9,8 +9,8 @@ from src.adapters.amazon_product_converter import AmazonProductConverter
 from src.adapters.amazon_request_sender import AmazonZenRowsRequestSender
 from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
 from src.application.amazon.amazon_product_collector.usecase import CollectAmazonProductsUseCase
-from src.application.amazon.amazon_report_product_collector.dto.product import AmazonReportProduct
-from src.application.amazon.amazon_report_product_collector.usecase import CollectFBAInventoryReportProductsUseCase
+from src.application.amazon.amazon_reports.dto.product import AmazonInventoryReportProduct
+from src.application.amazon.amazon_reports.usecase import CollectFBAInventoryReportProductsUseCase
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 
@@ -21,9 +21,9 @@ class CollectProductsAndSendToAirtableUseCase:
 
         # Report collect
         report_collector = CollectFBAInventoryReportProductsUseCase()
-        products_from_reports: list[AmazonReportProduct] = report_collector.collect(marketplaces=marketplaces)
+        products_from_reports: list[AmazonInventoryReportProduct] = report_collector.collect(marketplaces=marketplaces)
         logging.info('Total products collected: %s', len(products_from_reports))
-        active_products: list[AmazonReportProduct] = []  # with transfer to airtable
+        active_products: list[AmazonInventoryReportProduct] = []  # with transfer to airtable
         for product in products_from_reports:
             if product.asin in active_asins:
                 active_products.append(product)

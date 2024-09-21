@@ -1,11 +1,15 @@
 from dataclasses import dataclass
 
-from src.application.amazon.common.types import AsinStr, MarketplaceCountry
+from src.application.amazon.common.types import MarketplaceCountry
+
+
+class AmazonReportProduct:
+    pass
 
 
 @dataclass
-class AmazonReportProduct:  # TODO rename to Inventory
-    asin: AsinStr
+class AmazonInventoryReportProduct(AmazonReportProduct):
+    asin: str
     name: str
     marketplace_country: MarketplaceCountry
     sku: str
@@ -18,7 +22,7 @@ class AmazonReportProduct:  # TODO rename to Inventory
 
 
 @dataclass
-class SaleReportProduct:
+class SaleReportProduct(AmazonReportProduct):
     marketplace_country: MarketplaceCountry
     asin: str
     sku: str

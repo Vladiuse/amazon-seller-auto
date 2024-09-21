@@ -1,14 +1,13 @@
 from abc import ABC, abstractmethod
 
-from sp_api.base import ReportType
-
-from src.application.amazon.amazon_report_product_collector.dto.report import AmazonReport, AmazonReportDocument
+from src.application.amazon.amazon_reports.dto.report import AmazonReport, AmazonReportDocument
+from src.application.amazon.amazon_reports.types import ReportType
 
 
 class IAmazonReportCreator(ABC):
 
     @abstractmethod
-    def create_report(self, report_type: ReportType) -> str:
+    def create_report(self, report_type: ReportType, **kwargs) -> str:
         raise NotImplementedError
 
 
@@ -21,6 +20,7 @@ class IAmazonReportGetter(ABC):
     @abstractmethod
     def get_today_reports(self, report_type: ReportType) -> list[AmazonReport]:
         raise NotImplementedError
+
 
 class IAmazonReportDocumentGetter(ABC):
 
