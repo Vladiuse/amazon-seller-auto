@@ -1,8 +1,6 @@
 import logging
 from datetime import datetime
 
-import requests
-from requests.exceptions import RequestException
 from sp_api.api import Reports as SpApiReports
 from sp_api.base import Marketplaces as SpMarketplaces
 from sp_api.base import ProcessingStatus

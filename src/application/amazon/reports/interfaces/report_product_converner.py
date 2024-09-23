@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
 from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
 
 
 class IReportProductConvertor(ABC):

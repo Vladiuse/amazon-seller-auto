@@ -1,9 +1,9 @@
 import os
 from dataclasses import dataclass
 
-from src.application.amazon.pages.interfaces.page_provider import IAmazonProductPageProvider
 from src.application.amazon.common.interfaces.amazon_request_sender import IAmazonRequestSender
 from src.application.amazon.common.types import Asin, MarketplaceCountry
+from src.application.amazon.pages.interfaces.page_provider import IAmazonProductPageProvider
 from src.application.amazon.utils import get_marketplace_url
 from src.main.exceptions import MaxTriesError
 

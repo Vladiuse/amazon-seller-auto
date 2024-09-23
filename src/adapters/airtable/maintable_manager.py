@@ -1,9 +1,7 @@
-
 from src.application.airtable_product_sender.dto.product_table import MainTableProduct
-from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
-from src.application.amazon.common.types import Asin
 
 
 class MainTableObjectsManager:

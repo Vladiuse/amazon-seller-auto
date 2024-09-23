@@ -2,12 +2,12 @@ import csv
 import io
 import json
 
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
 from src.application.amazon.reports.interfaces.report_product_converner import (
     IReportProductConvertor,
     ISalesReportDocumentConvertor,
 )
-from src.application.amazon.common.types import MarketplaceCountry
 
 
 class InventoryReportDocumentConverter(IReportProductConvertor):
