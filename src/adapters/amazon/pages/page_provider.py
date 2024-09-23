@@ -15,7 +15,7 @@ class AmazonProductPageProvider(IAmazonProductPageProvider):
     def provide(self, asin: Asin, marketplace_country: MarketplaceCountry) -> str:
         marketplace_url = get_marketplace_url(marketplace_country)
         product_url = f'{marketplace_url}dp/{asin.value}'
-        return self.amazon_request_sender.get(url=product_url)
+        return self.amazon_request_sender.get(url=product_url).decode('utf-8')
 
 @dataclass
 class AmazonProductPageFileReader(IAmazonProductPageProvider):

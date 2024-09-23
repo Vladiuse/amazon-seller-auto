@@ -1,9 +1,8 @@
 from src.adapters.airtable.tables.models import AmazonProductTable
-from src.application.airtable_product_sender.dto.product_table import AirTableRequest
+from src.application.airtable_product_sender.dto.product_table import AirTableCreateRequest, MainTableProduct
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.application.airtable_product_sender.types import AirTableField, AirTableFieldType
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
 
 
 class CreateAmazonProductsTableUseCase:
@@ -12,7 +11,7 @@ class CreateAmazonProductsTableUseCase:
         self._table_creator = table_creator
 
     def create_table(self) -> None:
-        table_request = AirTableRequest(
+        table_request = AirTableCreateRequest(
             name='Amazon products',
             description='created by api',
             fields=[
@@ -26,6 +25,7 @@ class CreateAmazonProductsTableUseCase:
                 AirTableField(type=AirTableFieldType.NUMBER, name='inbound_receiving_qty', options={'precision': 0}),
                 AirTableField(type=AirTableFieldType.NUMBER, name='rating', options={'precision': 2}),
                 AirTableField(type=AirTableFieldType.NUMBER, name='rating_reviews', options={'precision': 0}),
+                AirTableField(type=AirTableFieldType.NUMBER, name='units_ordered', options={'precision': 0}),
             ],
         )
         self._table_creator.create_table(table_request=table_request)
@@ -36,7 +36,7 @@ class UpdateAmazonProductsTableUseCase:
     def __init__(self, product_sender: IAirTableProductSender):
         self._product_sender = product_sender
 
-    def update_table(self, products: list[AmazonInventoryReportProduct]) -> None:
+    def update_table(self, products: list[MainTableProduct]) -> None:
         self.__clean_tale()
         self._product_sender.send_products_to_table(products=products)
 

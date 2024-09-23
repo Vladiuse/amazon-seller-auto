@@ -49,8 +49,9 @@ class AmazonReportGetter(IAmazonReportGetter):
         delay=30,
         exceptions=(ReportDocumentNotComplete,),
     )
-    def get_report(self, report_id: str) -> AmazonReport:
-        sp_api_reports = SpApiReports(credentials=amazon_credentials)
+    def get_report(self,marketplace_country: MarketplaceCountry, report_id: str) -> AmazonReport:
+        marketplace = getattr(SpMarketplaces, marketplace_country.value)
+        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
         data = sp_api_reports.get_report(reportId=report_id)
         logging.info(data.payload)
         report = AmazonReport(**data.payload)
@@ -92,12 +93,3 @@ class AmazonReportDocumentGetter(IAmazonReportDocumentGetter):
         data = sp_api_reports.get_report_document(reportDocumentId=document_id)
         return AmazonReportDocument(**data.payload)
 
-    @retry(
-        attempts=3,
-        delay=15,
-        exceptions=(RequestException,),
-    )
-    def get_report_document_text(self, document_url: str) -> str:
-        response = requests.get(document_url)
-        response.raise_for_status()
-        return response.text

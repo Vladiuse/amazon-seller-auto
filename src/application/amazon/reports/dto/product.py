@@ -17,8 +17,6 @@ class AmazonInventoryReportProduct(AmazonReportProduct):
     inbound: int
     featured_offer: str
     inbound_receiving_qty: int
-    rating: float | None = None
-    rating_reviews: int | None = None
 
 
 @dataclass
@@ -27,3 +25,7 @@ class SaleReportProduct(AmazonReportProduct):
     asin: str
     sku: str
     units_ordered: int
+
+
+
+

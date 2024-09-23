@@ -4,13 +4,12 @@ from sp_api.base import Marketplaces
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
-from src.adapters.amazon.pages.product_collector import AmazonProductCollector
+from src.adapters.amazon.pages.product_collector import AmazonProductProvider
 from src.adapters.amazon.pages.product_converter import AmazonProductConverter
 from src.adapters.amazon_request_sender import AmazonZenRowsRequestSender
 from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
-from src.application.amazon.pages.usecase import CollectAmazonProductsUseCase
+from src.application.amazon.pages.usecase import AmazonProductsCollector
 from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct
-from src.application.amazon.reports.usecase import CollectFBAInventoryReportProductsUseCase
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.config import AMAZON_PRODUCT_PAGES_DIR
 
@@ -40,15 +39,15 @@ class CollectProductsAndSendToAirtableUseCase:
 
         # Load rating and reviews
         amazon_request_sender = AmazonZenRowsRequestSender()
-        product_collector = AmazonProductCollector(
+        product_collector = AmazonProductProvider(
             product_convertor=AmazonProductConverter(),
             # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
             product_page_provider=AmazonProductPageFileReader(products_dir=AMAZON_PRODUCT_PAGES_DIR),  # TEST
         )
-        product_collector_use_case = CollectAmazonProductsUseCase(
+        product_collector = AmazonProductsCollector(
             product_collector=product_collector,
         )
-        products_from_pars = product_collector_use_case.collect(items=unique_asins_to_parse)
+        products_from_pars = product_collector.collect(items=unique_asins_to_parse)
         logging.info('Total parsed asins: %s', len(products_from_pars))
 
         # Join data from reports with data from pars

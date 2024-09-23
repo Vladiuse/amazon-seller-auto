@@ -15,6 +15,7 @@ class AmazonProductTable(Model):
     inbound_receiving_qty = F.NumberField("inbound_receiving_qty")
     rating = F.NumberField("rating")
     rating_reviews = F.NumberField("rating_reviews")
+    units_ordered = F.NumberField("units_ordered")
 
     class Meta:
         base_id = config.airtable_config.AIRTABLE_APP_ID

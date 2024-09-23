@@ -35,7 +35,8 @@ class AmazonReportDocumentProvider(IAmazonReportProvider):
                 return self.report_document_getter.get_report_document(document_id=report.document_id,
                                                                        marketplace_country=marketplace_country)
         logging.info('Try create report %s', report_type.value)
-        report_id = self.report_creator.create_report(report_type=report_type, **kwargs)
-        report = self.report_getter.get_report(report_id=report_id)
+        report_id = self.report_creator.create_report(marketplace_country=marketplace_country, report_type=report_type,
+                                                      **kwargs)
+        report = self.report_getter.get_report(marketplace_country=marketplace_country, report_id=report_id)
         return self.report_document_getter.get_report_document(document_id=report.document_id,
                                                                marketplace_country=marketplace_country)

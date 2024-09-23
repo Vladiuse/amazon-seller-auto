@@ -1,17 +1,17 @@
 import logging
 
-from src.application.amazon.pages.dto.product import AmazonProduct
-from src.application.amazon.pages.interfaces.product_collector import IAmazonProductCollector
+from src.application.amazon.pages.dto.product import AmazonPageProduct
+from src.application.amazon.pages.interfaces.product_collector import IAmazonProductProvider
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.main.exceptions import MaxTriesError, ParserError
 
 
-class CollectAmazonProductsUseCase:
+class AmazonProductsCollector:
 
-    def __init__(self, product_collector: IAmazonProductCollector):
+    def __init__(self, product_collector: IAmazonProductProvider):
         self._product_collector = product_collector
 
-    def collect(self, items: list[tuple[Asin, MarketplaceCountry]]) -> list[AmazonProduct]:
+    def collect(self, items: list[tuple[Asin, MarketplaceCountry]]) -> list[AmazonPageProduct]:
         products = []
         products_errors = 0
         for asin, marketplace_country in items:

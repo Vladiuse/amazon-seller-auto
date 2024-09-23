@@ -1,17 +1,18 @@
 from bs4 import BeautifulSoup
 
-from src.application.amazon.pages.dto.product import AmazonProduct
+from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.pages.interfaces.product_converter import IAmazonProductConvertor
 from src.main.exceptions import HtmlElementNotFound, ParserError
 
 
 class AmazonProductConverter(IAmazonProductConvertor):
 
-    def convert(self, html: str, asin: str, marketplace_country: str) -> AmazonProduct:
+    def convert(self, html: str, asin: str, marketplace_country: MarketplaceCountry) -> AmazonPageProduct:
         soup = BeautifulSoup(html, 'lxml')
         rating_reviews = self.__get_rating_reviews(soup)
         rating = self.__get_rating(soup)
-        return AmazonProduct(
+        return AmazonPageProduct(
             rating_reviews=rating_reviews,
             rating=rating,
             asin=asin,
