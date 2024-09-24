@@ -1,6 +1,7 @@
 import gzip
 import os
 from dataclasses import dataclass
+from datetime import datetime
 
 from src.adapters.amazon.reports.report_document_product_converter import (
     InventoryReportDocumentConverter,
@@ -22,8 +23,19 @@ from src.application.amazon.reports.interfaces.report_document_product_provider 
 from src.application.amazon.reports.interfaces.report_documents_provider import IAmazonReportProvider
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import save_amazon_report
-from src.main.config import REPORTS_DIR
-from datetime import datetime
+from src.main.config import REPORTS_DIR, config
+
+amazon_seller_credentials = {
+    'refresh_token': config.amazon_config.SELLER_SP_API_REFRESH_TOKEN,
+    'lwa_app_id': config.amazon_config.SELLER_LWA_CLIENT_ID,
+    'lwa_client_secret': config.SELLER_amazon_config.LWA_CLIENT_SECRET,
+}
+
+amazon_vendor_credentials = {
+    'refresh_token': config.amazon_config.VENDOR_SP_API_REFRESH_TOKEN,
+    'lwa_app_id': config.amazon_config.VENDOR_SELLER_LWA_CLIENT_ID,
+    'lwa_client_secret': config.SELLER_amazon_config.VENDOR_LWA_CLIENT_SECRET,
+}
 
 
 @dataclass
@@ -37,6 +49,7 @@ class AmazonInventoryReportDocumentProductProvider(IAmazonReportDocumentProductP
             marketplace_country=marketplace_country,
             report_type=report_type,
             try_get_exists_report=True,
+            credentials=amazon_seller_credentials,
         )
         report_document_content = self.amazon_request_sender.get(report_document.url)
         report_document_text = report_document_content.decode('utf-8')
@@ -74,6 +87,7 @@ class AmazonSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvi
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         report_type = ReportType.SALES
         report_document = self.amazon_report_document_provider.provide(
+            credentials=amazon_seller_credentials,
             marketplace_country=marketplace_country,
             report_type=report_type,
             reportOptions={"dateGranularity": "MONTH", "asinGranularity": "SKU"},
@@ -116,6 +130,7 @@ class AmazonVendorSalesReportDocumentProductProvider(IAmazonReportDocumentProduc
         start_date = datetime(2024, 9, 23).isoformat()
         end_date = datetime(2024, 9, 24).isoformat()
         report_document = self.amazon_report_document_provider.provide(
+            credentials=amazon_vendor_credentials,
             marketplace_country=marketplace_country,
             report_type=report_type,
             dataStartTime=start_date,
@@ -147,5 +162,3 @@ class VendorSalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
         sales_report_converter = VendorSalesReportConverter()
         return sales_report_converter.convert(report_document_text=report_document_text,
                                               marketplace_country=marketplace_country)
-
-        

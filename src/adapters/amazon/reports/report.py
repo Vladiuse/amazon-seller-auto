@@ -18,13 +18,6 @@ from src.application.amazon.utils import retry
 from src.main.config import config
 from src.main.exceptions import ReportDocumentNotComplete, ReportStatusError
 
-amazon_credentials = {
-    'refresh_token': config.amazon_config.SP_API_REFRESH_TOKEN,
-    'lwa_app_id': config.amazon_config.LWA_CLIENT_ID,
-    'lwa_client_secret': config.amazon_config.LWA_CLIENT_SECRET,
-}
-
-
 class AmazonReportCreator(IAmazonReportCreator):
 
     @retry(
@@ -32,9 +25,9 @@ class AmazonReportCreator(IAmazonReportCreator):
         delay=3 * 60,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def create_report(self, marketplace_country: MarketplaceCountry, report_type: ReportType, **kwargs) -> str:
+    def create_report(self, credentials: dict,marketplace_country: MarketplaceCountry, report_type: ReportType, **kwargs) -> str:
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
-        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         data = sp_api_reports.create_report(reportType=report_type.value, **kwargs)
         logging.info(data.payload)
         return data.payload['reportId']
@@ -47,9 +40,9 @@ class AmazonReportGetter(IAmazonReportGetter):
         delay=30,
         exceptions=(ReportDocumentNotComplete,),
     )
-    def get_report(self,marketplace_country: MarketplaceCountry, report_id: str) -> AmazonReport:
+    def get_report(self,credentials: dict,marketplace_country: MarketplaceCountry, report_id: str) -> AmazonReport:
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
-        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         data = sp_api_reports.get_report(reportId=report_id)
         logging.info(data.payload)
         report = AmazonReport(**data.payload)
@@ -65,9 +58,9 @@ class AmazonReportGetter(IAmazonReportGetter):
         delay=10,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def get_today_reports(self, marketplace_country: MarketplaceCountry, report_type: ReportType) -> list[AmazonReport]:
+    def get_today_reports(self,credentials: dict, marketplace_country: MarketplaceCountry, report_type: ReportType) -> list[AmazonReport]:
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
-        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         date = datetime.now().replace(hour=11, minute=0, second=0, microsecond=0).isoformat()
         data = sp_api_reports.get_reports(
             reportTypes=[report_type.value, ],
@@ -85,9 +78,9 @@ class AmazonReportDocumentGetter(IAmazonReportDocumentGetter):
         delay=20,
         exceptions=(SellingApiRequestThrottledException,),
     )
-    def get_report_document(self, marketplace_country:MarketplaceCountry ,document_id: str) -> AmazonReportDocument:
+    def get_report_document(self, credentials: dict,marketplace_country:MarketplaceCountry ,document_id: str) -> AmazonReportDocument:
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
-        sp_api_reports = SpApiReports(credentials=amazon_credentials, marketplace=marketplace)
+        sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         data = sp_api_reports.get_report_document(reportDocumentId=document_id)
         return AmazonReportDocument(**data.payload)
 

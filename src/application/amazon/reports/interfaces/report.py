@@ -8,23 +8,26 @@ from src.application.amazon.reports.types import ReportType
 class IAmazonReportCreator(ABC):
 
     @abstractmethod
-    def create_report(self, marketplace_country: MarketplaceCountry, report_type: ReportType, **kwargs) -> str:
+    def create_report(self, credentials: dict, marketplace_country: MarketplaceCountry, report_type: ReportType,
+                      **kwargs) -> str:
         raise NotImplementedError
 
 
 class IAmazonReportGetter(ABC):
 
     @abstractmethod
-    def get_report(self,marketplace_country: MarketplaceCountry, report_id: str) -> AmazonReport:
+    def get_report(self, credentials: dict, marketplace_country: MarketplaceCountry, report_id: str) -> AmazonReport:
         raise NotImplementedError
 
     @abstractmethod
-    def get_today_reports(self, marketplace_country: MarketplaceCountry, report_type: ReportType) -> list[AmazonReport]:
+    def get_today_reports(self, credentials: dict, marketplace_country: MarketplaceCountry, report_type: ReportType) -> \
+    list[AmazonReport]:
         raise NotImplementedError
 
 
 class IAmazonReportDocumentGetter(ABC):
 
     @abstractmethod
-    def get_report_document(self, marketplace_country:MarketplaceCountry ,document_id: str) -> AmazonReportDocument:
+    def get_report_document(self, credentials: dict, marketplace_country: MarketplaceCountry,
+                            document_id: str) -> AmazonReportDocument:
         raise NotImplementedError

@@ -9,6 +9,7 @@ class IAmazonReportProvider(ABC):
 
     @abstractmethod
     def provide(self,
+                credentials: dict,
                 marketplace_country: MarketplaceCountry,
                 report_type: ReportType,
                 try_get_exists_report: bool = False,
