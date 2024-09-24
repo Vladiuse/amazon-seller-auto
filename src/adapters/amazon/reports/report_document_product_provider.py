@@ -95,7 +95,6 @@ class AmazonSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvi
             dataStartTime=yesterday.isoformat(),
             dataEndTime=today.isoformat(),
             reportOptions={
-                # "dateGranularity": "MONTH",
                 "asinGranularity": "SKU",
             },
         )

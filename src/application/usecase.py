@@ -1,7 +1,7 @@
 import logging
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
-from src.adapters.airtable.maintable_objects_creator import MainTableObjectsCreator
+from src.adapters.airtable.tables_records_builders import MainTableObjectsBuilder, VendorSalesObjectsBuilder
 from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
 from src.adapters.amazon.pages.product_collector import AmazonProductProvider
 from src.adapters.amazon.pages.product_converter import AmazonProductConverter
@@ -65,7 +65,7 @@ class CollectProductsAndSendToAirtableUseCase:
         product_collector = AmazonProductsCollector(
             product_collector=product_collector,
         )
-        table_objects_creator = MainTableObjectsCreator()
+        table_objects_creator = MainTableObjectsBuilder()
         table_objects_creator.add_inventory_data(items=inventory_products)
         table_objects_creator.add_sales_data(items=sales_products)
         unique_asins_geo_pairs = table_objects_creator.get_unique_asins_geo_pairs()
@@ -94,6 +94,9 @@ class CollectProductsAndSendToAirtableUseCase:
         for marketplace_country in marketplace_countries:
             products = vendor_sales_report_product_provider.provide(marketplace_country=marketplace_country)
             all_vendor_sales.extend(products)
-        logging.info('Vendor sales products: %s', len(all_vendor_sales))
+
+        vendor_sales_builder = VendorSalesObjectsBuilder()
+        vendor_sales_builder.add_vendor_sales_data(items=all_vendor_sales)
+        logging.info('Vendor sales records count: %s', len(vendor_sales_builder.items))
         vendor_use_case = UpdateVendorTableUseCase()
-        vendor_use_case.update_table(vendor_sales=all_vendor_sales)
+        vendor_use_case.update_table(vendor_sales_records=vendor_sales_builder.items)

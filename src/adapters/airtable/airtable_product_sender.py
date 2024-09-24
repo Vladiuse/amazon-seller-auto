@@ -1,12 +1,11 @@
-from src.application.airtable_product_sender.dto.product_table import MainTableProduct
+from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
-from src.application.amazon.reports.dto.product import VendorSaleProduct
 from .tables.models import AmazonProductTable, AmazonVendorSalesTable
 
 
 class AirTableProductSender(IAirTableProductSender):
 
-    def send_products_to_table(self, products: list[MainTableProduct]) -> None:
+    def send_products_to_table(self, products: list[MainTableRecord]) -> None:
         products_to_send = []
         for product in products:
             product_to_send = AmazonProductTable(
@@ -25,7 +24,7 @@ class AirTableProductSender(IAirTableProductSender):
             products_to_send.append(product_to_send)
         AmazonProductTable.batch_save(products_to_send)
 
-    def send_vendor_sales_data(self, items: list[VendorSaleProduct]) -> None:
+    def send_vendor_sales_data(self, items: list[VendorSalesRecord]) -> None:
         vendor_sales_to_sand = []
         for item in items:
             vendor_record = AmazonVendorSalesTable(

@@ -1,6 +1,7 @@
 import csv
 import io
 import json
+from collections import defaultdict
 
 from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct, VendorSaleProduct
@@ -51,13 +52,16 @@ class SalesReportDocumentConvertor(ISalesReportDocumentConvertor):
 class VendorSalesReportConverter(IVendorSalesConverter):
 
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
-        sales = []
+        vendor_sales = []
         data = json.loads(report_document_text)
+        asins = defaultdict(int)
         for sale_item in data['reportData']:
-            vendor_sale = VendorSaleProduct(
-                asin=sale_item['asin'],
-                ordered_units=sale_item['orderedUnits'],
+            asins[sale_item['asin']] +=sale_item['orderedUnits']
+        for asin, ordered_units in asins.items():
+            vendor_sale_item = VendorSaleProduct(
+                asin=asin,
+                ordered_units=ordered_units,
                 marketplace_country=marketplace_country,
             )
-            sales.append(vendor_sale)
-        return sales
+            vendor_sales.append(vendor_sale_item)
+        return vendor_sales

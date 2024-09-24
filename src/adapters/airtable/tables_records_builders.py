@@ -1,20 +1,20 @@
-from src.application.airtable_product_sender.dto.product_table import MainTableProduct
+from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct, VendorSaleProduct
 
 
-class MainTableObjectsCreator:
+class MainTableObjectsBuilder:
 
     def __init__(self):
         self.items = {}
 
-    def __get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> MainTableProduct:
+    def __get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> MainTableRecord:
         key = self.__get_key(asin=asin, sku=sku, marketplace_country=marketplace_country)
         try:
             record = self.items[key]
         except KeyError:
-            record = MainTableProduct(asin=asin, sku=sku, marketplace_country=marketplace_country)
+            record = MainTableRecord(asin=asin, sku=sku, marketplace_country=marketplace_country)
             self.items.update({
                 key: record,
             })
@@ -61,3 +61,19 @@ class MainTableObjectsCreator:
             if pair not in result:
                 result.append(pair)
         return result
+
+
+class VendorSalesObjectsBuilder:
+
+    def __init__(self):
+        self.items = []
+
+
+    def add_vendor_sales_data(self, items:list[VendorSaleProduct]) -> None:
+        for item in items:
+            record = VendorSalesRecord(
+                asin=item.asin,
+                ordered_units=item.ordered_units,
+                marketplace_country=item.marketplace_country,
+            )
+            self.items.append(record)

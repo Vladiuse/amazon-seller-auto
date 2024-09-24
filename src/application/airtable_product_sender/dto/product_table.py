@@ -10,7 +10,7 @@ class AirTableCreateRequest(BaseModel):
     fields: list[AirTableField]
 
 
-class MainTableProduct(BaseModel):
+class MainTableRecord(BaseModel):
     asin: str
     sku: str
     marketplace_country: MarketplaceCountry
@@ -22,6 +22,12 @@ class MainTableProduct(BaseModel):
     rating: float | None = None
     rating_reviews: int | None = None
     units_ordered: int | None = None
+
+
+class VendorSalesRecord(BaseModel):
+    asin: str
+    ordered_units: int
+    marketplace_country: MarketplaceCountry
 
 
 
