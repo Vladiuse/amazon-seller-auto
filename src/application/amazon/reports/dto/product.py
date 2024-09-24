@@ -27,5 +27,12 @@ class SaleReportProduct(AmazonReportProduct):
     units_ordered: int
 
 
+@dataclass
+class VendorSaleProduct(AmazonReportProduct):
+    asin: str
+    ordered_units: int
+    marketplace_country: MarketplaceCountry
+
+
 
 

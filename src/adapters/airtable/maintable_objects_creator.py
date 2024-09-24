@@ -4,12 +4,12 @@ from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
 
 
-class MainTableObjectsManager:
+class MainTableObjectsCreator:
 
     def __init__(self):
         self.items = {}
 
-    def get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> MainTableProduct:
+    def __get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> MainTableProduct:
         key = self.__get_key(asin=asin, sku=sku, marketplace_country=marketplace_country)
         try:
             record = self.items[key]
@@ -25,7 +25,7 @@ class MainTableObjectsManager:
 
     def add_inventory_data(self, items: list[AmazonInventoryReportProduct]) -> None:
         for inventory_item in items:
-            record = self.get_record(
+            record = self.__get_record(
                 asin=inventory_item.asin,
                 sku=inventory_item.sku,
                 marketplace_country=inventory_item.marketplace_country,
@@ -39,7 +39,7 @@ class MainTableObjectsManager:
 
     def add_sales_data(self, items: list[SaleReportProduct]) -> None:
         for sale_item in items:
-            record = self.get_record(
+            record = self.__get_record(
                 asin=sale_item.asin,
                 sku=sale_item.sku,
                 marketplace_country=sale_item.marketplace_country,

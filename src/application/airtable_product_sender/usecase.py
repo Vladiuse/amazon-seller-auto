@@ -1,8 +1,10 @@
-from src.adapters.airtable.tables.models import AmazonProductTable
+from src.adapters.airtable.tables.models import AmazonProductTable, AmazonVendorSalesTable
 from src.application.airtable_product_sender.dto.product_table import AirTableCreateRequest, MainTableProduct
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.application.airtable_product_sender.types import AirTableField, AirTableFieldType
+from src.adapters.airtable.airtable_product_sender import AirTableProductSender
+from src.application.amazon.reports.dto.product import VendorSaleProduct
 
 
 class CreateAmazonProductsTableUseCase:
@@ -33,13 +35,22 @@ class CreateAmazonProductsTableUseCase:
 
 class UpdateAmazonProductsTableUseCase:
 
-    def __init__(self, product_sender: IAirTableProductSender):
-        self._product_sender = product_sender
-
     def update_table(self, products: list[MainTableProduct]) -> None:
-        self.__clean_tale()
-        self._product_sender.send_products_to_table(products=products)
-
-    def __clean_tale(self) -> None:
+        #clean table
         records = AmazonProductTable.all()
         AmazonProductTable.batch_delete(records)
+        product_sender = AirTableProductSender()
+        product_sender.send_products_to_table(products=products)
+
+
+class UpdateVendorTableUseCase:
+
+    def update_table(self, vendor_sales: list[VendorSaleProduct]) -> None:
+        #clean table
+        records = AmazonVendorSalesTable.all()
+        AmazonVendorSalesTable.batch_delete(records)
+        product_sender = AirTableProductSender()
+        product_sender.send_vendor_sales_data(items=vendor_sales)
+
+
+

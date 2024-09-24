@@ -19,6 +19,16 @@ class AmazonProductTable(Model):
 
     class Meta:
         base_id = config.airtable_config.AIRTABLE_APP_ID
-        table_name = config.airtable_config.AIRTABLE_TABLE_ID
+        table_name = config.airtable_config.AIRTABLE_MAIN_TABLE_ID
         api_key = config.airtable_config.AIRTABLE_API_KEY
 
+
+class AmazonVendorSalesTable(Model):
+    asin = F.TextField("asin")
+    marketplace_country = F.TextField("marketplace_country")
+    ordered_units = F.NumberField("ordered_units")
+
+    class Meta:
+        base_id = config.airtable_config.AIRTABLE_APP_ID
+        table_name = config.airtable_config.AIRTABLE_VENDOR_SALES_TABLE_ID
+        api_key = config.airtable_config.AIRTABLE_API_KEY

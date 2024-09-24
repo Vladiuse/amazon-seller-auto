@@ -3,10 +3,11 @@ import io
 import json
 
 from src.application.amazon.common.types import MarketplaceCountry
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct
+from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct, VendorSaleProduct
 from src.application.amazon.reports.interfaces.report_product_converner import (
     IReportProductConvertor,
     ISalesReportDocumentConvertor,
+    IVendorSalesConverter,
 )
 
 
@@ -45,3 +46,18 @@ class SalesReportDocumentConvertor(ISalesReportDocumentConvertor):
             )
             products.append(sale_report_product)
         return products
+
+
+class VendorSalesReportConverter(IVendorSalesConverter):
+
+    def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
+        sales = []
+        data = json.loads(report_document_text)
+        for sale_item in data['reportData']:
+            vendor_sale = VendorSaleProduct(
+                asin=sale_item['asin'],
+                ordered_units=sale_item['orderedUnits'],
+                marketplace_country=marketplace_country,
+            )
+            sales.append(vendor_sale)
+        return sales

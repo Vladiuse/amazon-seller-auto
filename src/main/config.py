@@ -19,8 +19,8 @@ class AmazonConfig(BaseSettings):
 class AirTableConfig(BaseSettings):
     AIRTABLE_API_KEY: str
     AIRTABLE_APP_ID: str
-    AIRTABLE_TABLE_ID: str
-
+    AIRTABLE_MAIN_TABLE_ID: str
+    AIRTABLE_VENDOR_SALES_TABLE_ID: str
 
 class ZenRowConfig(BaseSettings):
     ZENROWS_API_KEY: str

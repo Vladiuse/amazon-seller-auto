@@ -1,7 +1,7 @@
 import logging
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
-from src.adapters.airtable.maintable_manager import MainTableObjectsManager
+from src.adapters.airtable.maintable_objects_creator import MainTableObjectsCreator
 from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
 from src.adapters.amazon.pages.product_collector import AmazonProductProvider
 from src.adapters.amazon.pages.product_converter import AmazonProductConverter
@@ -9,11 +9,12 @@ from src.adapters.amazon.reports.report import AmazonReportCreator, AmazonReport
 from src.adapters.amazon.reports.report_document_product_provider import (
     InventoryReportProviderFromFile,
     SalesReportProviderFromFile,
+    VendorSalesReportProviderFromFile,
 )
 from src.adapters.amazon.reports.report_documents_provider import AmazonReportDocumentProvider
 from src.adapters.amazon.reports.reports_procucts_collector import AmazonReportsProductsCollector
 from src.adapters.amazon_request_sender import AmazonRequestsRequestSender, AmazonZenRowsRequestSender
-from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase
+from src.application.airtable_product_sender.usecase import UpdateAmazonProductsTableUseCase, UpdateVendorTableUseCase
 from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.pages.usecase import AmazonProductsCollector
 from src.application.amazon.utils import get_active_asins
@@ -64,22 +65,35 @@ class CollectProductsAndSendToAirtableUseCase:
         product_collector = AmazonProductsCollector(
             product_collector=product_collector,
         )
-        manager = MainTableObjectsManager()
-        manager.add_inventory_data(items=inventory_products)
-        manager.add_sales_data(items=sales_products)
-        unique_asins_geo_pairs = manager.get_unique_asins_geo_pairs()
+        table_objects_creator = MainTableObjectsCreator()
+        table_objects_creator.add_inventory_data(items=inventory_products)
+        table_objects_creator.add_sales_data(items=sales_products)
+        unique_asins_geo_pairs = table_objects_creator.get_unique_asins_geo_pairs()
         logging.info('unique_asins_geo_pairs: %s', len(unique_asins_geo_pairs))
         products_from_pars = product_collector.collect(items=unique_asins_geo_pairs)
         logging.info('products_from_pars: %s', len(products_from_pars))
-        manager.add_rating_data(items=products_from_pars)
+        table_objects_creator.add_rating_data(items=products_from_pars)
         active_asins = get_active_asins(return_string=True)
 
         #Send data to airtable
         products_to_send = []
-        for record in manager.items.values():
+        for record in table_objects_creator.items.values():
             if record.asin in active_asins:
                 products_to_send.append(record)
-        update_products_use_case = UpdateAmazonProductsTableUseCase(
-            product_sender=AirTableProductSender(),
+        update_main_table_use_case = UpdateAmazonProductsTableUseCase(
+
         )
-        update_products_use_case.update_table(products=products_to_send)
+        update_main_table_use_case.update_table(products=products_to_send)
+
+        # Vendor Sales
+        vendor_sales_report_product_provider = VendorSalesReportProviderFromFile( #
+            amazon_request_sender=amazon_request_sender,
+            amazon_report_document_provider=report_document_provider,
+        )
+        all_vendor_sales = []
+        for marketplace_country in marketplace_countries:
+            products = vendor_sales_report_product_provider.provide(marketplace_country=marketplace_country)
+            all_vendor_sales.extend(products)
+        logging.info('Vendor sales products: %s', len(all_vendor_sales))
+        vendor_use_case = UpdateVendorTableUseCase()
+        vendor_use_case.update_table(vendor_sales=all_vendor_sales)

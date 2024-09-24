@@ -40,3 +40,4 @@ class AmazonReportDocumentProvider(IAmazonReportProvider):
         report = self.report_getter.get_report(marketplace_country=marketplace_country, report_id=report_id)
         return self.report_document_getter.get_report_document(document_id=report.document_id,
                                                                marketplace_country=marketplace_country)
+
