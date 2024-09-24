@@ -4,7 +4,11 @@ import json
 from collections import defaultdict
 
 from src.application.amazon.common.types import MarketplaceCountry
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct, VendorSaleProduct
+from src.application.amazon.reports.dto.product import (
+    AmazonInventoryReportProduct,
+    SaleReportProduct,
+    VendorSaleProduct,
+)
 from src.application.amazon.reports.interfaces.report_product_converner import (
     IReportProductConvertor,
     ISalesReportDocumentConvertor,

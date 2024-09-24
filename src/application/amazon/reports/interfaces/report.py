@@ -20,8 +20,11 @@ class IAmazonReportGetter(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_today_reports(self, credentials: dict, marketplace_country: MarketplaceCountry, report_type: ReportType) -> \
-    list[AmazonReport]:
+    def get_today_reports(self,
+                          credentials: dict,
+                          marketplace_country: MarketplaceCountry,
+                          report_type: ReportType,
+                          ) -> list[AmazonReport]:
         raise NotImplementedError
 
 

@@ -1,12 +1,14 @@
+from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.airtable.tables.models import AmazonProductTable, AmazonVendorSalesTable
-from src.application.airtable_product_sender.dto.product_table import AirTableCreateRequest, MainTableRecord
-from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
+from src.application.airtable_product_sender.dto.product_table import (
+    AirTableCreateRequest,
+    MainTableRecord,
+    VendorSalesRecord,
+)
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.application.airtable_product_sender.types import AirTableField, AirTableFieldType
-from src.adapters.airtable.airtable_product_sender import AirTableProductSender
-from src.application.amazon.reports.dto.product import VendorSaleProduct
 
-from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
+
 class CreateAmazonProductsTableUseCase:
 
     def __init__(self, table_creator: IAirtableTableCreator):

@@ -1,5 +1,6 @@
 from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
 from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
+
 from .tables.models import AmazonProductTable, AmazonVendorSalesTable
 
 

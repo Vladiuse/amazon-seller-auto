@@ -1,6 +1,5 @@
 import logging
 
-from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.airtable.tables_records_builders import MainTableObjectsBuilder, VendorSalesObjectsBuilder
 from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
 from src.adapters.amazon.pages.product_collector import AmazonProductProvider

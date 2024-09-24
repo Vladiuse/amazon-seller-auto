@@ -1,7 +1,11 @@
 from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
-from src.application.amazon.reports.dto.product import AmazonInventoryReportProduct, SaleReportProduct, VendorSaleProduct
+from src.application.amazon.reports.dto.product import (
+    AmazonInventoryReportProduct,
+    SaleReportProduct,
+    VendorSaleProduct,
+)
 
 
 class MainTableObjectsBuilder:
