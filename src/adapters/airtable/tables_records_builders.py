@@ -1,4 +1,4 @@
-from src.application.airtable_product_sender.dto.product_table import MainTableRecord, VendorSalesRecord
+from src.application.airtable_product_sender.dto.table_records import AmazonProductRecord, VendorSalesRecord
 from src.application.amazon.common.types import Asin, MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import (
@@ -13,12 +13,12 @@ class MainTableObjectsBuilder:
     def __init__(self):
         self.items = {}
 
-    def __get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> MainTableRecord:
+    def __get_record(self, asin: str, sku: str, marketplace_country: MarketplaceCountry) -> AmazonProductRecord:
         key = self.__get_key(asin=asin, sku=sku, marketplace_country=marketplace_country)
         try:
             record = self.items[key]
         except KeyError:
-            record = MainTableRecord(asin=asin, sku=sku, marketplace_country=marketplace_country)
+            record = AmazonProductRecord(asin=asin, sku=sku, marketplace_country=marketplace_country)
             self.items.update({
                 key: record,
             })

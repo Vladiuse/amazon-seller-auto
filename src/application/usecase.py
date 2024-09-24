@@ -32,7 +32,6 @@ class CollectProductsAndSendToAirtableUseCase:
             report_document_getter=report_document_getter,
         )
         amazon_request_sender = AmazonRequestsRequestSender()
-
         # inventory product provider
         inventory_report_document_product_provider = InventoryReportProviderFromFile(  #
             amazon_request_sender=amazon_request_sender,
@@ -93,7 +92,6 @@ class CollectProductsAndSendToAirtableUseCase:
         for marketplace_country in marketplace_countries:
             products = vendor_sales_report_product_provider.provide(marketplace_country=marketplace_country)
             all_vendor_sales.extend(products)
-
         vendor_sales_builder = VendorSalesObjectsBuilder()
         vendor_sales_builder.add_vendor_sales_data(items=all_vendor_sales)
         logging.info('Vendor sales records count: %s', len(vendor_sales_builder.items))

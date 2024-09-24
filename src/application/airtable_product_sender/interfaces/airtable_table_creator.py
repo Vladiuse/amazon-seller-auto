@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.application.airtable_product_sender.dto.product_table import AirTableCreateRequest
+from src.application.airtable_product_sender.dto.table_records import AirTableCreateRequest
 
 
 class IAirtableTableCreator(ABC):

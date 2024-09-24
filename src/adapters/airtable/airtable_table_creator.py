@@ -1,6 +1,6 @@
 import requests
 
-from src.application.airtable_product_sender.dto.product_table import AirTableCreateRequest
+from src.application.airtable_product_sender.dto.table_records import AirTableCreateRequest
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
 from src.main.config import config
 

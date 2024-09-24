@@ -1,8 +1,8 @@
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.airtable.tables.models import AmazonProductTable, AmazonVendorSalesTable
-from src.application.airtable_product_sender.dto.product_table import (
+from src.application.airtable_product_sender.dto.table_records import (
     AirTableCreateRequest,
-    MainTableRecord,
+    AmazonProductRecord,
     VendorSalesRecord,
 )
 from src.application.airtable_product_sender.interfaces.airtable_table_creator import IAirtableTableCreator
@@ -37,7 +37,7 @@ class CreateAmazonProductsTableUseCase:
 
 class UpdateAmazonProductsTableUseCase:
 
-    def update_table(self, products: list[MainTableRecord]) -> None:
+    def update_table(self, products: list[AmazonProductRecord]) -> None:
         #clean table
         records = AmazonProductTable.all()
         AmazonProductTable.batch_delete(records)

@@ -10,7 +10,7 @@ class AirTableCreateRequest(BaseModel):
     fields: list[AirTableField]
 
 
-class MainTableRecord(BaseModel):
+class AmazonProductRecord(BaseModel):
     asin: str
     sku: str
     marketplace_country: MarketplaceCountry
