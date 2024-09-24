@@ -1,7 +1,7 @@
 import gzip
 import os
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from src.adapters.amazon.reports.report_document_product_converter import (
     InventoryReportDocumentConverter,
@@ -28,13 +28,13 @@ from src.main.config import REPORTS_DIR, config
 amazon_seller_credentials = {
     'refresh_token': config.amazon_config.SELLER_SP_API_REFRESH_TOKEN,
     'lwa_app_id': config.amazon_config.SELLER_LWA_CLIENT_ID,
-    'lwa_client_secret': config.SELLER_amazon_config.LWA_CLIENT_SECRET,
+    'lwa_client_secret': config.amazon_config.SELLER_LWA_CLIENT_SECRET,
 }
 
 amazon_vendor_credentials = {
     'refresh_token': config.amazon_config.VENDOR_SP_API_REFRESH_TOKEN,
-    'lwa_app_id': config.amazon_config.VENDOR_SELLER_LWA_CLIENT_ID,
-    'lwa_client_secret': config.SELLER_amazon_config.VENDOR_LWA_CLIENT_SECRET,
+    'lwa_app_id': config.amazon_config.VENDOR_LWA_CLIENT_ID,
+    'lwa_client_secret': config.amazon_config.VENDOR_LWA_CLIENT_SECRET,
 }
 
 
@@ -86,11 +86,18 @@ class AmazonSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvi
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         report_type = ReportType.SALES
+        today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+        yesterday = today - timedelta(days=1)
         report_document = self.amazon_report_document_provider.provide(
             credentials=amazon_seller_credentials,
             marketplace_country=marketplace_country,
             report_type=report_type,
-            reportOptions={"dateGranularity": "MONTH", "asinGranularity": "SKU"},
+            dataStartTime=yesterday.isoformat(),
+            dataEndTime=today.isoformat(),
+            reportOptions={
+                # "dateGranularity": "MONTH",
+                "asinGranularity": "SKU",
+            },
         )
         report_document_content = self.amazon_request_sender.get(report_document.url)
         report_document_text = gzip.decompress(report_document_content).decode('utf-8')
@@ -127,14 +134,14 @@ class AmazonVendorSalesReportDocumentProductProvider(IAmazonReportDocumentProduc
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
         report_type = ReportType.VENDOR_SALES
-        start_date = datetime(2024, 9, 23).isoformat()
-        end_date = datetime(2024, 9, 24).isoformat()
+        today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+        yesterday = today - timedelta(days=1)
         report_document = self.amazon_report_document_provider.provide(
             credentials=amazon_vendor_credentials,
             marketplace_country=marketplace_country,
             report_type=report_type,
-            dataStartTime=start_date,
-            dataEndTime=end_date,
+            dataStartTime=yesterday.isoformat(),
+            dataEndTime=today.isoformat(),
         )
         report_document_content = self.amazon_request_sender.get(report_document.url)
         report_document_text = gzip.decompress(report_document_content).decode('utf-8')
