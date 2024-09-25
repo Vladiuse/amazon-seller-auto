@@ -2,7 +2,7 @@ import logging
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
 from src.adapters.amazon.pages.page_product_provider import AmazonProductProvider
-from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader
+from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader, AmazonProductPageProvider
 from src.adapters.amazon.pages.product_collector import AmazonProductsCollector
 from src.adapters.amazon.pages.product_converter import AmazonProductConverter
 from src.adapters.amazon.reports.report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
@@ -12,6 +12,9 @@ from src.adapters.amazon.reports.report_document_product_converter import (
     VendorSalesReportConverter,
 )
 from src.adapters.amazon.reports.report_document_product_provider import (
+    AmazonInventoryReportDocumentProductProvider,
+    AmazonSalesReportDocumentProductProvider,
+    AmazonVendorSalesReportDocumentProductProvider,
     InventoryReportProviderFromFile,
     SalesReportProviderFromFile,
     VendorSalesReportProviderFromFile,
@@ -22,6 +25,7 @@ from src.adapters.amazon_request_sender import AmazonRequestsRequestSender, Amaz
 from src.application.amazon.common.types import MarketplaceCountry
 from src.application.usecase import CollectProductsAndSendToAirtableUseCase
 from src.main.config import AMAZON_PRODUCT_PAGES_DIR
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -39,19 +43,22 @@ report_document_provider = AmazonReportDocumentProvider(
     report_document_getter=AmazonReportDocumentGetter(),
 )
 amazon_request_sender = AmazonRequestsRequestSender()
-inventory_report_document_product_provider = InventoryReportProviderFromFile(  #
-    # amazon_request_sender=amazon_request_sender,
-    # amazon_report_document_provider=report_document_provider,
+inventory_report_document_product_provider = AmazonInventoryReportDocumentProductProvider(
+    # for test InventoryReportProviderFromFile
+    amazon_request_sender=amazon_request_sender,
+    amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=InventoryReportDocumentConverter(),
 )
-sales_report_document_product_provider = SalesReportProviderFromFile(  #
-    # amazon_request_sender=amazon_request_sender,
-    # amazon_report_document_provider=report_document_provider,
+sales_report_document_product_provider = AmazonSalesReportDocumentProductProvider(
+    # for test SalesReportProviderFromFile
+    amazon_request_sender=amazon_request_sender,
+    amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=SalesReportDocumentConvertor(),
 )
-vendor_sales_report_product_provider = VendorSalesReportProviderFromFile(  #
-    # amazon_request_sender=amazon_request_sender,
-    # amazon_report_document_provider=report_document_provider,
+vendor_sales_report_product_provider = AmazonVendorSalesReportDocumentProductProvider(
+    # for test VendorSalesReportProviderFromFile
+    amazon_request_sender=amazon_request_sender,
+    amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=VendorSalesReportConverter(),
 )
 
@@ -63,7 +70,7 @@ sales_collector = AmazonReportsProductsCollector(
 )
 
 vendor_sales_collector = AmazonReportsProductsCollector(
-amazon_report_document_product_provider=vendor_sales_report_product_provider,
+    amazon_report_document_product_provider=vendor_sales_report_product_provider,
 )
 
 amazon_request_sender = AmazonZenRowsRequestSender()
