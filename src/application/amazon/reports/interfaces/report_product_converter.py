@@ -8,7 +8,7 @@ from src.application.amazon.reports.dto.product import (
 )
 
 
-class IInventoryReportConvertor(ABC):
+class IInventoryReportConverter(ABC):
 
     @abstractmethod
     def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[
@@ -16,7 +16,7 @@ class IInventoryReportConvertor(ABC):
         raise NotImplementedError
 
 
-class ISalesReportConvertor(ABC):
+class ISalesReportConverter(ABC):
 
     @abstractmethod
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:

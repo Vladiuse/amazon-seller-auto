@@ -4,7 +4,7 @@ from time import sleep
 
 from sp_api.base import Marketplaces as SpMarketplaces
 
-from src.application.amazon.common.types import Asin, MarketplaceCountry
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.types import ReportType
 from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, REPORTS_DIR
 from src.main.exceptions import MaxTriesError
@@ -31,9 +31,9 @@ def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseExcep
     return decorator
 
 
-def save_amazon_product_page(html: str, asin: Asin, marketplace_country: MarketplaceCountry) -> None:
+def save_amazon_product_page(html: str, asin: str, marketplace_country: MarketplaceCountry) -> None:
     file_path = os.path.join(AMAZON_PRODUCT_PAGES_DIR,
-                             f'{marketplace_country.value}_{asin.value}.html')
+                             f'{marketplace_country.value}_{asin}.html')
     with open(file_path, 'w') as file:
         file.write(html)
 
@@ -60,16 +60,13 @@ def get_marketplace_country(marketplace: SpMarketplaces) -> MarketplaceCountry:
     }[marketplace]
 
 
-def get_active_asins(return_string=False) -> list[Asin | str]:
+def get_active_asins() -> list[str]:
     asins = []
     with open(ACTIVE_ASINS_FILE_PATH) as file:
         for line in file:
             asin_str = line.strip()
             if asin_str != '':
-                asin = Asin(value=asin_str)
-                asins.append(asin)
-    if return_string:
-        return [asin.value for asin in asins]
+                asins.append(asin_str)
     return asins
 
 

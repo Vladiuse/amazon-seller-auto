@@ -6,7 +6,6 @@ from src.application.amazon.reports.dto.product import VendorSaleProduct
 
 class IAirTableProductSender(ABC):
 
-
     @abstractmethod
     def send_products_to_table(self, products: list[AmazonProductRecord]) -> None:
         raise NotImplementedError

@@ -1,5 +1,5 @@
 from src.application.airtable_product_sender.dto.table_records import AmazonProductRecord, VendorSalesRecord
-from src.application.amazon.common.types import Asin, MarketplaceCountry
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
@@ -57,11 +57,10 @@ class MainTableObjectsBuilder:
                     record.rating = rating_item.rating
                     record.rating_reviews = rating_item.rating_reviews
 
-    def get_unique_asins_geo_pairs(self) -> list[tuple[Asin, MarketplaceCountry]]:
+    def get_unique_asins_geo_pairs(self) -> list[tuple[str, MarketplaceCountry]]:
         result = []
         for item in self.items.values():
-            asin = Asin(value=item.asin)
-            pair = (asin, item.marketplace_country)
+            pair = (item.asin, item.marketplace_country)
             if pair not in result:
                 result.append(pair)
         return result

@@ -32,7 +32,3 @@ class VendorSaleProduct(AmazonReportProduct):
     asin: str
     ordered_units: int
     marketplace_country: MarketplaceCountry
-
-
-
-

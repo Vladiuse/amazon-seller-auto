@@ -9,14 +9,14 @@ from src.application.amazon.reports.dto.product import (
     SaleReportProduct,
     VendorSaleProduct,
 )
-from src.application.amazon.reports.interfaces.report_product_converner import (
-    IInventoryReportConvertor,
-    ISalesReportConvertor,
+from src.application.amazon.reports.interfaces.report_product_converter import (
+    IInventoryReportConverter,
+    ISalesReportConverter,
     IVendorSalesReportConverter,
 )
 
 
-class InventoryReportDocumentConverter(IInventoryReportConvertor):
+class InventoryReportDocumentConverter(IInventoryReportConverter):
 
     def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[
         AmazonInventoryReportProduct]:
@@ -37,7 +37,7 @@ class InventoryReportDocumentConverter(IInventoryReportConvertor):
         return products
 
 
-class SalesReportDocumentConvertor(ISalesReportConvertor):
+class SalesReportDocumentConvertor(ISalesReportConverter):
 
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         data = json.loads(report_document_text)

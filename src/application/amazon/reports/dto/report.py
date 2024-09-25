@@ -14,7 +14,7 @@ class AmazonReport(BaseModel):
 
     def is_complete(self) -> bool:
         return self.processing_status in [ProcessingStatus.DONE, ProcessingStatus.FATAL,
-                                          ProcessingStatus.CANCELLED]
+                                          ProcessingStatus.CANCELLED, ]
 
     def is_document_created(self) -> bool:
         return self.processing_status == ProcessingStatus.DONE

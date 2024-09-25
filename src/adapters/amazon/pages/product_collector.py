@@ -1,19 +1,26 @@
-from dataclasses import dataclass
+import logging
 
-from src.application.amazon.common.types import Asin, MarketplaceCountry
+from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
-from src.application.amazon.pages.interfaces.page_provider import IAmazonProductPageProvider
-from src.application.amazon.pages.interfaces.product_collector import IAmazonProductProvider
-from src.application.amazon.pages.interfaces.product_converter import IAmazonProductConvertor
-from src.application.amazon.utils import save_amazon_product_page
+from src.application.amazon.pages.interfaces.page_product_provider import IAmazonProductProvider
+from src.application.amazon.pages.interfaces.product_collector import IAmazonProductsCollector
+from src.main.exceptions import MaxTriesError, ParserError
 
 
-@dataclass
-class AmazonProductProvider(IAmazonProductProvider):
-    product_convertor: IAmazonProductConvertor
-    product_page_provider: IAmazonProductPageProvider
+class AmazonProductsCollector(IAmazonProductsCollector):
 
-    def collect(self, asin: Asin, marketplace_country: MarketplaceCountry) -> AmazonPageProduct:
-        html = self.product_page_provider.provide(asin=asin, marketplace_country=marketplace_country)
-        save_amazon_product_page(html=html, asin=asin, marketplace_country=marketplace_country)
-        return self.product_convertor.convert(html=html, asin=asin.value, marketplace_country=marketplace_country)
+    def __init__(self, product_provider: IAmazonProductProvider):
+        self._product_provider = product_provider
+
+    def collect(self, items: list[tuple[str, MarketplaceCountry]]) -> list[AmazonPageProduct]:
+        products = []
+        products_errors = 0
+        for asin, marketplace_country in items:
+            try:
+                product = self._product_provider.collect(asin=asin, marketplace_country=marketplace_country)
+                products.append(product)
+            except (ParserError, MaxTriesError, ) as e:
+                logging.error(str(e))
+                products_errors += 1
+        logging.error('Cant get products pages: %s', products_errors)
+        return products
