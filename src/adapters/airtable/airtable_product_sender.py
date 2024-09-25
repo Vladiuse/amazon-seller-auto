@@ -35,7 +35,3 @@ class AirTableProductSender(IAirTableProductSender):
             )
             vendor_sales_to_sand.append(vendor_record)
         AmazonVendorSalesTable.batch_save(vendor_sales_to_sand)
-
-
-
-

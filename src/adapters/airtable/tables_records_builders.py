@@ -72,8 +72,7 @@ class VendorSalesObjectsBuilder:
     def __init__(self):
         self.items = []
 
-
-    def add_vendor_sales_data(self, items:list[VendorSaleProduct]) -> None:
+    def add_vendor_sales_data(self, items: list[VendorSaleProduct]) -> None:
         for item in items:
             record = VendorSalesRecord(
                 asin=item.asin,

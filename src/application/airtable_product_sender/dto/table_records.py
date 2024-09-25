@@ -1,13 +1,6 @@
 from pydantic import BaseModel
 
-from src.application.airtable_product_sender.types import AirTableField
 from src.application.amazon.common.types import MarketplaceCountry
-
-
-class AirTableCreateRequest(BaseModel):
-    name: str
-    description: str | None = None
-    fields: list[AirTableField]
 
 
 class AmazonProductRecord(BaseModel):
@@ -28,9 +21,3 @@ class VendorSalesRecord(BaseModel):
     asin: str
     ordered_units: int
     marketplace_country: MarketplaceCountry
-
-
-
-
-
-

@@ -20,7 +20,7 @@ class AmazonProductConverter(IAmazonProductConvertor):
         )
 
     def __get_rating_reviews(self, soup: BeautifulSoup) -> int:
-        reviews_block = soup.find('span', attrs={'id': 'acrCustomerReviewText'})
+        reviews_block = soup.find('span', attrs={'id': 'acrCustomerReviewText', })
         if reviews_block is None:
             raise HtmlElementNotFound
         try:
@@ -29,10 +29,10 @@ class AmazonProductConverter(IAmazonProductConvertor):
             raise ParserError('Cant get reviews')
 
     def __get_rating(self, soup: BeautifulSoup) -> float:
-        rate_block = soup.find('span', attrs={'class': 'reviewCountTextLinkedHistogram'})
+        rate_block = soup.find('span', attrs={'class': 'reviewCountTextLinkedHistogram', })
         if rate_block is None:
             raise HtmlElementNotFound
-        rating = rate_block.find('span', attrs={'class': 'a-size-base a-color-base'})
+        rating = rate_block.find('span', attrs={'class': 'a-size-base a-color-base', })
         if rating is None:
             raise HtmlElementNotFound
         rating_text = rating.text.strip().replace(',', '.')
