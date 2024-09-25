@@ -10,13 +10,13 @@ from src.application.amazon.reports.dto.product import (
     VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_product_converner import (
-    IReportProductConvertor,
-    ISalesReportDocumentConvertor,
-    IVendorSalesConverter,
+    IInventoryReportConvertor,
+    ISalesReportConvertor,
+    IVendorSalesReportConverter,
 )
 
 
-class InventoryReportDocumentConverter(IReportProductConvertor):
+class InventoryReportDocumentConverter(IInventoryReportConvertor):
 
     def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[
         AmazonInventoryReportProduct]:
@@ -37,7 +37,7 @@ class InventoryReportDocumentConverter(IReportProductConvertor):
         return products
 
 
-class SalesReportDocumentConvertor(ISalesReportDocumentConvertor):
+class SalesReportDocumentConvertor(ISalesReportConvertor):
 
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         data = json.loads(report_document_text)
@@ -53,14 +53,14 @@ class SalesReportDocumentConvertor(ISalesReportDocumentConvertor):
         return products
 
 
-class VendorSalesReportConverter(IVendorSalesConverter):
+class VendorSalesReportConverter(IVendorSalesReportConverter):
 
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
         vendor_sales = []
         data = json.loads(report_document_text)
         asins = defaultdict(int)
         for sale_item in data['reportData']:
-            asins[sale_item['asin']] +=sale_item['orderedUnits']
+            asins[sale_item['asin']] += sale_item['orderedUnits']
         for asin, ordered_units in asins.items():
             vendor_sale_item = VendorSaleProduct(
                 asin=asin,

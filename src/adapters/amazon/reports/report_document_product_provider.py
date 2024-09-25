@@ -3,11 +3,6 @@ import os
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
-from src.adapters.amazon.reports.report_document_product_converter import (
-    InventoryReportDocumentConverter,
-    SalesReportDocumentConvertor,
-    VendorSalesReportConverter,
-)
 from src.application.amazon.common.interfaces.amazon_request_sender import (
     IAmazonRequestSender,
 )
@@ -21,6 +16,11 @@ from src.application.amazon.reports.interfaces.report_document_product_provider 
     IAmazonReportDocumentProductProvider,
 )
 from src.application.amazon.reports.interfaces.report_documents_provider import IAmazonReportProvider
+from src.application.amazon.reports.interfaces.report_product_converner import (
+    IInventoryReportConvertor,
+    ISalesReportConvertor,
+    IVendorSalesReportConverter,
+)
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import save_amazon_report
 from src.main.config import REPORTS_DIR, config
@@ -42,6 +42,7 @@ amazon_vendor_credentials = {
 class AmazonInventoryReportDocumentProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
+    amazon_report_product_converter: IInventoryReportConvertor
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[AmazonInventoryReportProduct]:
         report_type = ReportType.INVENTORY
@@ -59,30 +60,28 @@ class AmazonInventoryReportDocumentProductProvider(IAmazonReportDocumentProductP
             report_type=report_type,
             output_file_format='csv',
         )
-        inventory_report_converter = InventoryReportDocumentConverter()
-        return inventory_report_converter.convert(report_document_text=report_document_text,
-                                                  marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
 
 
+@dataclass
 class InventoryReportProviderFromFile(IAmazonReportDocumentProductProvider):
-
-    def __init__(self, *args, **kwargs):
-        pass
+    amazon_report_product_converter: IInventoryReportConvertor
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[AmazonInventoryReportProduct]:
         report_file_name = f'{marketplace_country.value}_{ReportType.INVENTORY.value.value}.csv'
         report_path = os.path.join(REPORTS_DIR, report_file_name)
         with open(report_path) as file:
             report_document_text = file.read()
-        inventory_report_converter = InventoryReportDocumentConverter()
-        return inventory_report_converter.convert(report_document_text=report_document_text,
-                                                  marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
 
 
 @dataclass
 class AmazonSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
+    amazon_report_product_converter: ISalesReportConvertor
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         report_type = ReportType.SALES
@@ -106,30 +105,28 @@ class AmazonSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvi
             report_type=report_type,
             output_file_format='json',
         )
-        sales_report_converter = SalesReportDocumentConvertor()
-        return sales_report_converter.convert(report_document_text=report_document_text,
-                                              marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
 
 
+@dataclass
 class SalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
-
-    def __init__(self, *args, **kwargs):
-        pass
+    amazon_report_product_converter: ISalesReportConvertor
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         report_file_name = f'{marketplace_country.value}_{ReportType.SALES.value.value}.json'
         report_path = os.path.join(REPORTS_DIR, report_file_name)
         with open(report_path) as file:
             report_document_text = file.read()
-        sales_report_converter = SalesReportDocumentConvertor()
-        return sales_report_converter.convert(report_document_text=report_document_text,
-                                              marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
 
 
 @dataclass
 class AmazonVendorSalesReportDocumentProductProvider(IAmazonReportDocumentProductProvider):
     amazon_report_document_provider: IAmazonReportProvider
     amazon_request_sender: IAmazonRequestSender
+    amazon_report_product_converter: IVendorSalesReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
         report_type = ReportType.VENDOR_SALES
@@ -150,21 +147,18 @@ class AmazonVendorSalesReportDocumentProductProvider(IAmazonReportDocumentProduc
             report_type=report_type,
             output_file_format='json',
         )
-        sales_report_converter = VendorSalesReportConverter()
-        return sales_report_converter.convert(report_document_text=report_document_text,
-                                              marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
 
 
+@dataclass
 class VendorSalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
-
-    def __init__(self, *args, **kwargs):
-        pass
+    amazon_report_product_converter: IVendorSalesReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
         report_file_name = f'{marketplace_country.value}_{ReportType.VENDOR_SALES.value.value}.json'
         report_path = os.path.join(REPORTS_DIR, report_file_name)
         with open(report_path) as file:
             report_document_text = file.read()
-        sales_report_converter = VendorSalesReportConverter()
-        return sales_report_converter.convert(report_document_text=report_document_text,
-                                              marketplace_country=marketplace_country)
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
