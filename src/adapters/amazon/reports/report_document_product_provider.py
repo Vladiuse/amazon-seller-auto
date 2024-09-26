@@ -11,6 +11,7 @@ from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     SaleReportProduct,
     VendorSaleProduct,
+    FeeAmazonProduct,
 )
 from src.application.amazon.reports.interfaces.report_document_product_provider import (
     IAmazonReportDocumentProductProvider,
@@ -20,6 +21,7 @@ from src.application.amazon.reports.interfaces.report_product_converter import (
     IInventoryReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
+    IFeeReportConverter,
 )
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import save_amazon_report
@@ -162,3 +164,28 @@ class VendorSalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
             report_document_text = file.read()
         return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
                                                             marketplace_country=marketplace_country)
+
+
+
+@dataclass
+class FeeReportDocumentProvider(IAmazonReportDocumentProductProvider):
+    amazon_request_sender: IAmazonRequestSender
+    amazon_report_document_provider: IAmazonReportProvider
+    amazon_report_product_converter: IFeeReportConverter
+    def provide(self, marketplace_country: MarketplaceCountry) -> list[FeeAmazonProduct]:
+        report_type = ReportType.FEE
+        report_document = self.amazon_report_document_provider.provide(
+            marketplace_country=marketplace_country,
+            report_type=report_type,
+            credentials=amazon_seller_credentials,
+        )
+        report_document_content = self.amazon_request_sender.get(report_document.url)
+        report_document_text = report_document_content.decode('utf-8')
+        save_amazon_report(
+            report_document_text=report_document_text,
+            marketplace_country=marketplace_country,
+            report_type=report_type,
+            output_file_format='csv',
+        )
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text)
+
