@@ -10,16 +10,16 @@ from src.main.config import ACTIVE_ASINS_FILE_PATH, AMAZON_PRODUCT_PAGES_DIR, RE
 from src.main.exceptions import MaxTriesError
 
 
-def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseException]] | None = None):
+def retry(attempts: int = 3, delay: float = 10, exceptions: tuple[type[BaseException]] | None = None):  # noqa: ANN201
     if exceptions is None:
         exceptions = []
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+    def decorator(func):  # noqa: ANN202
+        def wrapper(*args, **kwargs):  # noqa: ANN202
             for _ in range(attempts):
                 try:
                     return func(*args, **kwargs)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     if type(e) not in exceptions:
                         raise e
                     logging.info('Sleeping')
@@ -48,6 +48,17 @@ def save_amazon_report(
     report_file_path = os.path.join(REPORTS_DIR, report_file_name)
     with open(report_file_path, 'w') as file:
         file.write(report_document_text)
+
+
+def read_amazon_report(
+        report_type: ReportType,
+        marketplace_country: MarketplaceCountry,
+        file_format: str,
+) -> str:
+    report_file_name = f'{marketplace_country.value}_{report_type.value.value}.{file_format}'
+    report_path = os.path.join(REPORTS_DIR, report_file_name)
+    with open(report_path) as file:
+        return file.read()
 
 
 def get_marketplace_country(marketplace: SpMarketplaces) -> MarketplaceCountry:

@@ -34,7 +34,7 @@ class AmazonReportCreator(IAmazonReportCreator):
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
         sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         data = sp_api_reports.create_report(reportType=report_type.value, **kwargs)
-        logging.info(data.payload)
+        logging.debug(data.payload)
         return data.payload['reportId']
 
 
@@ -49,7 +49,7 @@ class AmazonReportGetter(IAmazonReportGetter):
         marketplace = getattr(SpMarketplaces, marketplace_country.value)
         sp_api_reports = SpApiReports(credentials=credentials, marketplace=marketplace)
         data = sp_api_reports.get_report(reportId=report_id)
-        logging.info(data.payload)
+        logging.debug(data.payload)
         report = AmazonReport(**data.payload)
         if not report.is_complete():
             raise ReportDocumentNotComplete
@@ -76,7 +76,7 @@ class AmazonReportGetter(IAmazonReportGetter):
             processingStatuses=[ProcessingStatus.DONE, ],
             createdSince=date,
         )
-        logging.info(data.payload)
+        logging.debug(data.payload)
         return [AmazonReport(**report_data) for report_data in data.payload['reports']]
 
 

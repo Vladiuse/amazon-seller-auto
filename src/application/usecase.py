@@ -15,6 +15,7 @@ class CollectProductsAndSendToAirtableUseCase:
     inventory_collector: IAmazonReportsProductsCollector
     sales_collector: IAmazonReportsProductsCollector
     vendor_sales_collector: IAmazonReportsProductsCollector
+    fee_collector: IAmazonReportsProductsCollector
     product_collector: IAmazonProductsCollector
     airtable_product_sender: IAirTableProductSender
     amazon_products_records_builder: MainTableRecordsBuilder
@@ -24,10 +25,12 @@ class CollectProductsAndSendToAirtableUseCase:
         # Amazon Products Table
         inventory_products = self.inventory_collector.collects(marketplace_countries=marketplace_countries)
         sales_products = self.sales_collector.collects(marketplace_countries=marketplace_countries)
+        fee_products = self.fee_collector.collects(marketplace_countries=[MarketplaceCountry.IT, ])
         logging.info('inventory_products: %s', len(inventory_products))
         logging.info('sales_products: %s', len(sales_products))
         self.amazon_products_records_builder.add_inventory_data(items=inventory_products)
         self.amazon_products_records_builder.add_sales_data(items=sales_products)
+        self.amazon_products_records_builder.add_fee_data(items=fee_products)
         unique_asins_geo_pairs = self.amazon_products_records_builder.get_unique_asins_geo_pairs()
         logging.info('unique_asins_geo_pairs: %s', len(unique_asins_geo_pairs))
         products_from_pars = self.product_collector.collect(items=unique_asins_geo_pairs)

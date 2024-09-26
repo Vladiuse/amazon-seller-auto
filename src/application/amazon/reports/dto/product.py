@@ -32,3 +32,13 @@ class VendorSaleProduct(AmazonReportProduct):
     asin: str
     ordered_units: int
     marketplace_country: MarketplaceCountry
+
+
+
+@dataclass
+class FeeAmazonProduct:
+    asin: str
+    sku: str
+    fba_fee: float
+    marketplace_country: MarketplaceCountry
+
