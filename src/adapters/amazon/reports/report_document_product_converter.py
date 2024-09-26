@@ -79,6 +79,7 @@ class FeeReportConverter(IFeeReportConverter):
     def convert(self, report_document_text: str) -> list[FeeAmazonProduct]:
         fee_products = []
         reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
+        not_existing_geo = set()
         for row in reader:
             try:
                 product = FeeAmazonProduct(
@@ -90,6 +91,8 @@ class FeeReportConverter(IFeeReportConverter):
                 fee_products.append(product)
             except AttributeError:
                 # ignore countries that not in MarketplaceCountry Enum
-                logging.error('MarketplaceCountry %s does not exists', row['amazon-store'])
+                not_existing_geo.add(row['amazon-store'])
                 continue
+        if len(not_existing_geo) > 0:
+            logging.warning('MarketplaceCountry %s does not exists', not_existing_geo)
         return fee_products

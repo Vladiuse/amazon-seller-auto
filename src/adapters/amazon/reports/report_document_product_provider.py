@@ -189,3 +189,13 @@ class FeeReportDocumentProvider(IAmazonReportDocumentProductProvider):
         )
         return self.amazon_report_product_converter.convert(report_document_text=report_document_text)
 
+@dataclass
+class FeeReportProviderFromFile(IAmazonReportDocumentProductProvider):
+    amazon_report_product_converter: IFeeReportConverter
+
+    def provide(self, marketplace_country: MarketplaceCountry) -> list[FeeAmazonProduct]:
+        report_file_name = f'{marketplace_country.value}_{ReportType.FEE.value.value}.csv'
+        report_path = os.path.join(REPORTS_DIR, report_file_name)
+        with open(report_path) as file:
+            report_document_text = file.read()
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text)
