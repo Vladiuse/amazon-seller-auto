@@ -3,9 +3,9 @@ from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
+    FeeAmazonProduct,
     SaleReportProduct,
     VendorSaleProduct,
-    FeeAmazonProduct,
 )
 
 
