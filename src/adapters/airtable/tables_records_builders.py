@@ -8,7 +8,7 @@ from src.application.amazon.reports.dto.product import (
 )
 
 
-class MainTableObjectsBuilder:
+class MainTableRecordsBuilder:
 
     def __init__(self):
         self.items = {}
@@ -66,7 +66,7 @@ class MainTableObjectsBuilder:
         return result
 
 
-class VendorSalesObjectsBuilder:
+class VendorSalesRecordsBuilder:
 
     def __init__(self):
         self.items = []

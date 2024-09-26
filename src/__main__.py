@@ -1,6 +1,7 @@
 import logging
 
 from src.adapters.airtable.airtable_product_sender import AirTableProductSender
+from src.adapters.airtable.tables_records_builders import MainTableRecordsBuilder, VendorSalesRecordsBuilder
 from src.adapters.amazon.pages.page_product_provider import AmazonProductProvider
 from src.adapters.amazon.pages.page_provider import AmazonProductPageFileReader, AmazonProductPageProvider
 from src.adapters.amazon.pages.product_collector import AmazonProductsCollector
@@ -84,11 +85,16 @@ product_collector = AmazonProductsCollector(
 )
 airtable_product_sender = AirTableProductSender()
 
+amazon_products_records_builder = MainTableRecordsBuilder()
+amazon_vendor_records_builder = VendorSalesRecordsBuilder()
+
 use_case = CollectProductsAndSendToAirtableUseCase(
     inventory_collector=inventory_collector,
     sales_collector=sales_collector,
     vendor_sales_collector=vendor_sales_collector,
     product_collector=product_collector,
     airtable_product_sender=airtable_product_sender,
+    amazon_products_records_builder=amazon_products_records_builder,
+    amazon_vendor_records_builder=amazon_vendor_records_builder,
 )
 use_case.collect_and_send(marketplace_countries=marketplace_countries)
