@@ -32,11 +32,11 @@ class AmazonReportDocumentProvider(IAmazonReportProvider):
                                                                    marketplace_country=marketplace_country)
             if len(exiting_reports) != 0:
                 report = max(exiting_reports, key=lambda report: report.created)
-                logging.info('Get exiting report %s', report_type.value)
+                logging.info('Get exiting report %s %s', report_type.value, marketplace_country)
                 return self.report_document_getter.get_report_document(credentials=credentials,
                                                                        document_id=report.document_id,
                                                                        marketplace_country=marketplace_country)
-        logging.info('Try create report %s', report_type.value)
+        logging.info('Try create report %s %s', report_type.value, marketplace_country)
         report_id = self.report_creator.create_report(credentials=credentials, marketplace_country=marketplace_country,
                                                       report_type=report_type,
                                                       **kwargs)

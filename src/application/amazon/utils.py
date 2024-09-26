@@ -49,6 +49,17 @@ def save_amazon_report(
     with open(report_file_path, 'w') as file:
         file.write(report_document_text)
 
+def read_amazon_report(
+        report_type: ReportType,
+        marketplace_country: MarketplaceCountry,
+        file_format: str,
+)-> str:
+    report_file_name = f'{marketplace_country.value}_{report_type.value.value}.{file_format}'
+    report_path = os.path.join(REPORTS_DIR, report_file_name)
+    with open(report_path) as file:
+        return file.read()
+
+
 
 def get_marketplace_country(marketplace: SpMarketplaces) -> MarketplaceCountry:
     return {
