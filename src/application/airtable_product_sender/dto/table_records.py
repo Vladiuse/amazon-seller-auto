@@ -15,6 +15,7 @@ class AmazonProductRecord(BaseModel):
     rating: float | None = None
     rating_reviews: int | None = None
     units_ordered: int | None = None
+    fba_fee: float | None = None
 
 
 class VendorSalesRecord(BaseModel):

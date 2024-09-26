@@ -11,14 +11,17 @@ from src.adapters.amazon.reports.report_document_product_converter import (
     InventoryReportDocumentConverter,
     SalesReportDocumentConverter,
     VendorSalesReportConverter,
+    FeeReportConverter,
 )
 from src.adapters.amazon.reports.report_document_product_provider import (
     AmazonInventoryReportDocumentProductProvider,
     AmazonSalesReportDocumentProductProvider,
     AmazonVendorSalesReportDocumentProductProvider,
+    FeeReportDocumentProvider,
     InventoryReportProviderFromFile,
     SalesReportProviderFromFile,
     VendorSalesReportProviderFromFile,
+    FeeReportProviderFromFile,
 )
 from src.adapters.amazon.reports.report_documents_provider import AmazonReportDocumentProvider
 from src.adapters.amazon.reports.reports_procucts_collector import AmazonReportsProductsCollector
@@ -45,22 +48,28 @@ report_document_provider = AmazonReportDocumentProvider(
 )
 amazon_request_sender = AmazonRequestsRequestSender()
 inventory_report_document_product_provider = AmazonInventoryReportDocumentProductProvider(
-    # for test InventoryReportProviderFromFile
+    # for test InventoryReportProviderFromFile, from amazon AmazonInventoryReportDocumentProductProvider
     amazon_request_sender=amazon_request_sender,
     amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=InventoryReportDocumentConverter(),
 )
 sales_report_document_product_provider = AmazonSalesReportDocumentProductProvider(
-    # for test SalesReportProviderFromFile
+    # for test SalesReportProviderFromFile, from amazon AmazonSalesReportDocumentProductProvider
     amazon_request_sender=amazon_request_sender,
     amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=SalesReportDocumentConverter(),
 )
 vendor_sales_report_product_provider = AmazonVendorSalesReportDocumentProductProvider(
-    # for test VendorSalesReportProviderFromFile
+    # for test VendorSalesReportProviderFromFile, from amazon AmazonVendorSalesReportDocumentProductProvider
     amazon_request_sender=amazon_request_sender,
     amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=VendorSalesReportConverter(),
+)
+fee_report_product_provider = FeeReportDocumentProvider(
+    # for test FeeReportProviderFromFile, from amazon FeeReportDocumentProvider
+    amazon_request_sender=amazon_request_sender,
+    amazon_report_document_provider=report_document_provider,
+    amazon_report_product_converter=FeeReportConverter(),
 )
 
 inventory_collector = AmazonReportsProductsCollector(
@@ -69,16 +78,17 @@ inventory_collector = AmazonReportsProductsCollector(
 sales_collector = AmazonReportsProductsCollector(
     amazon_report_document_product_provider=sales_report_document_product_provider,
 )
-
 vendor_sales_collector = AmazonReportsProductsCollector(
     amazon_report_document_product_provider=vendor_sales_report_product_provider,
 )
+fee_collector = AmazonReportsProductsCollector(
+    amazon_report_document_product_provider=fee_report_product_provider,
+)
 
-amazon_request_sender = AmazonZenRowsRequestSender()
 product_provider = AmazonProductProvider(
     product_converter=AmazonProductConverter(),
-    # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
-    product_page_provider=AmazonProductPageFileReader(products_dir=AMAZON_PRODUCT_PAGES_DIR),  # TEST
+    product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
+    # product_page_provider=AmazonProductPageFileReader(products_dir=AMAZON_PRODUCT_PAGES_DIR),  # TEST
 )
 product_collector = AmazonProductsCollector(
     product_provider=product_provider,
@@ -92,6 +102,7 @@ use_case = CollectProductsAndSendToAirtableUseCase(
     inventory_collector=inventory_collector,
     sales_collector=sales_collector,
     vendor_sales_collector=vendor_sales_collector,
+    fee_collector=fee_collector,
     product_collector=product_collector,
     airtable_product_sender=airtable_product_sender,
     amazon_products_records_builder=amazon_products_records_builder,

@@ -16,6 +16,7 @@ class AmazonProductTable(Model):
     rating = F.NumberField("rating")
     rating_reviews = F.NumberField("rating_reviews")
     units_ordered = F.NumberField("units_ordered")
+    fba_fee = F.NumberField("fba_fee")
 
     class Meta:
         base_id = config.airtable_config.AIRTABLE_APP_ID

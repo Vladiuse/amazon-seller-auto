@@ -172,7 +172,7 @@ class VendorSalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
 class FeeReportDocumentProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
-    amazon_report_product_converter: IFeeReportConverter
+    amazon_report_product_converter: IFeeReportConverter 
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[FeeAmazonProduct]:
         report_type = ReportType.FEE

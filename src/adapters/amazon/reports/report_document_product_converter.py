@@ -85,7 +85,7 @@ class FeeReportConverter(IFeeReportConverter):
                 product = FeeAmazonProduct(
                     asin=row['asin'],
                     sku=row['sku'],
-                    fba_fee=row['expected-domestic-fulfilment-fee-per-unit'],
+                    fba_fee=float(row['expected-domestic-fulfilment-fee-per-unit']),
                     marketplace_country=getattr(MarketplaceCountry, row['amazon-store']),
                 )
                 fee_products.append(product)

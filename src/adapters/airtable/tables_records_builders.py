@@ -5,6 +5,7 @@ from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     SaleReportProduct,
     VendorSaleProduct,
+    FeeAmazonProduct,
 )
 
 
@@ -56,6 +57,15 @@ class MainTableRecordsBuilder:
                 if record.asin == rating_item.asin and record.marketplace_country == rating_item.marketplace_country:
                     record.rating = rating_item.rating
                     record.rating_reviews = rating_item.rating_reviews
+
+    def add_fee_data(self, items: list[FeeAmazonProduct]) -> None:
+        for fee_product in items:
+            record = self.__get_record(
+                asin=fee_product.asin,
+                sku=fee_product.sku,
+                marketplace_country=fee_product.marketplace_country,
+            )
+            record.fba_fee = fee_product.fba_fee
 
     def get_unique_asins_geo_pairs(self) -> list[tuple[str, MarketplaceCountry]]:
         result = []
