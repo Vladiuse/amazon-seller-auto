@@ -1,15 +1,18 @@
 import csv
 import io
 import json
+import logging
 from collections import defaultdict
 
 from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
+    FeeAmazonProduct,
     SaleReportProduct,
     VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_product_converter import (
+    IFeeReportConverter,
     IInventoryReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
@@ -39,7 +42,7 @@ class InventoryReportDocumentConverter(IInventoryReportConverter):
 
 class SalesReportDocumentConverter(ISalesReportConverter):
 
-    def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         data = json.loads(report_document_text)
         products = []
         for item in data['salesAndTrafficByAsin']:
@@ -55,7 +58,7 @@ class SalesReportDocumentConverter(ISalesReportConverter):
 
 class VendorSalesReportConverter(IVendorSalesReportConverter):
 
-    def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[VendorSaleProduct]:
         vendor_sales = []
         data = json.loads(report_document_text)
         asins = defaultdict(int)
@@ -69,3 +72,24 @@ class VendorSalesReportConverter(IVendorSalesReportConverter):
             )
             vendor_sales.append(vendor_sale_item)
         return vendor_sales
+
+
+class FeeReportConverter(IFeeReportConverter):
+
+    def convert(self, report_document_text: str) -> list[FeeAmazonProduct]:
+        fee_products = []
+        reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
+        for row in reader:
+            try:
+                product = FeeAmazonProduct(
+                    asin=row['asin'],
+                    sku=row['sku'],
+                    fba_fee=row['expected-domestic-fulfilment-fee-per-unit'],
+                    marketplace_country=getattr(MarketplaceCountry, row['amazon-store']),
+                )
+                fee_products.append(product)
+            except AttributeError:
+                # ignore countries that not in MarketplaceCountry Enum
+                logging.error('MarketplaceCountry %s does not exists', row['amazon-store'])
+                continue
+        return fee_products
