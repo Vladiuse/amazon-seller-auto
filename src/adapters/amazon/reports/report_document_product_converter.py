@@ -37,7 +37,7 @@ class InventoryReportDocumentConverter(IInventoryReportConverter):
         return products
 
 
-class SalesReportDocumentConvertor(ISalesReportConverter):
+class SalesReportDocumentConverter(ISalesReportConverter):
 
     def convert(self, report_document_text, marketplace_country: MarketplaceCountry) -> list[SaleReportProduct]:
         data = json.loads(report_document_text)

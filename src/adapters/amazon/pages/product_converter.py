@@ -2,11 +2,11 @@ from bs4 import BeautifulSoup
 
 from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.pages.dto.product import AmazonPageProduct
-from src.application.amazon.pages.interfaces.product_converter import IAmazonProductConvertor
+from src.application.amazon.pages.interfaces.product_converter import IAmazonProductConverter
 from src.main.exceptions import HtmlElementNotFound, ParserError
 
 
-class AmazonProductConverter(IAmazonProductConvertor):
+class AmazonProductConverter(IAmazonProductConverter):
 
     def convert(self, html: str, asin: str, marketplace_country: MarketplaceCountry) -> AmazonPageProduct:
         soup = BeautifulSoup(html, 'lxml')

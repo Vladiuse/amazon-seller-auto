@@ -9,7 +9,7 @@ from src.adapters.amazon.pages.product_converter import AmazonProductConverter
 from src.adapters.amazon.reports.report import AmazonReportCreator, AmazonReportDocumentGetter, AmazonReportGetter
 from src.adapters.amazon.reports.report_document_product_converter import (
     InventoryReportDocumentConverter,
-    SalesReportDocumentConvertor,
+    SalesReportDocumentConverter,
     VendorSalesReportConverter,
 )
 from src.adapters.amazon.reports.report_document_product_provider import (
@@ -54,7 +54,7 @@ sales_report_document_product_provider = AmazonSalesReportDocumentProductProvide
     # for test SalesReportProviderFromFile
     amazon_request_sender=amazon_request_sender,
     amazon_report_document_provider=report_document_provider,
-    amazon_report_product_converter=SalesReportDocumentConvertor(),
+    amazon_report_product_converter=SalesReportDocumentConverter(),
 )
 vendor_sales_report_product_provider = AmazonVendorSalesReportDocumentProductProvider(
     # for test VendorSalesReportProviderFromFile
@@ -76,7 +76,7 @@ vendor_sales_collector = AmazonReportsProductsCollector(
 
 amazon_request_sender = AmazonZenRowsRequestSender()
 product_provider = AmazonProductProvider(
-    product_convertor=AmazonProductConverter(),
+    product_converter=AmazonProductConverter(),
     # product_page_provider=AmazonProductPageProvider(amazon_request_sender=amazon_request_sender),
     product_page_provider=AmazonProductPageFileReader(products_dir=AMAZON_PRODUCT_PAGES_DIR),  # TEST
 )
