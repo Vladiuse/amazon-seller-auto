@@ -2,7 +2,6 @@ import gzip
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from src.main.exceptions import ReportStatusError
 
 from src.application.amazon.common.interfaces.amazon_request_sender import (
     IAmazonRequestSender,
@@ -11,8 +10,8 @@ from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     FeeAmazonProduct,
-    SaleReportProduct,
     ReservedProduct,
+    SaleReportProduct,
     VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_document_product_provider import (
@@ -22,13 +21,14 @@ from src.application.amazon.reports.interfaces.report_documents_provider import 
 from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
-    ISalesReportConverter,
     IReservedReportConverter,
+    ISalesReportConverter,
     IVendorSalesReportConverter,
 )
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import read_amazon_report, save_amazon_report
 from src.main.config import config
+from src.main.exceptions import ReportStatusError
 
 amazon_seller_credentials = {
     'refresh_token': config.amazon_config.SELLER_SP_API_REFRESH_TOKEN,
