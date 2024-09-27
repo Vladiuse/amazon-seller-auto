@@ -8,12 +8,14 @@ from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     FeeAmazonProduct,
+    ReservedProduct,
     SaleReportProduct,
     VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
+    IReservedReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
 )
@@ -96,3 +98,19 @@ class FeeReportConverter(IFeeReportConverter):
         if len(not_existing_geo) > 0:
             logging.warning('MarketplaceCountry %s does not exists', not_existing_geo)
         return fee_products
+
+
+class ReservedReportConverter(IReservedReportConverter):
+
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[ReservedProduct]:
+        reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
+        products = []
+        for row in reader:
+            product = ReservedProduct(
+                asin=row['asin'],
+                sku=row['sku'],
+                marketplace_country=marketplace_country,
+                fc_transfer=row['reserved_fc-transfers'],
+            )
+            products.append(product)
+        return products

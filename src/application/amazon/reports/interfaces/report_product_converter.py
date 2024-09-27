@@ -4,6 +4,7 @@ from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     FeeAmazonProduct,
+    ReservedProduct,
     SaleReportProduct,
     VendorSaleProduct,
 )
@@ -35,4 +36,11 @@ class IFeeReportConverter(ABC):
 
     @abstractmethod
     def convert(self, report_document_text: str) -> list[FeeAmazonProduct]:
+        raise NotImplementedError
+
+
+class IReservedReportConverter(ABC):
+
+    @abstractmethod
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[ReservedProduct]:
         raise NotImplementedError
