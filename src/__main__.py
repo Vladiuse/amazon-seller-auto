@@ -11,6 +11,7 @@ from src.adapters.amazon.reports.report_document_product_converter import (
     InventoryReportDocumentConverter,
     SalesReportDocumentConverter,
     VendorSalesReportConverter,
+    ReservedReportConverter,
     FeeReportConverter,
 )
 from src.adapters.amazon.reports.report_document_product_provider import (
@@ -22,6 +23,8 @@ from src.adapters.amazon.reports.report_document_product_provider import (
     SalesReportProviderFromFile,
     VendorSalesReportProviderFromFile,
     FeeReportProviderFromFile,
+    ReservedReportProductProvider,
+    ReservedReportProductProviderFromFile,
 )
 from src.adapters.amazon.reports.report_documents_provider import AmazonReportDocumentProvider
 from src.adapters.amazon.reports.reports_procucts_collector import AmazonReportsProductsCollector
@@ -71,6 +74,12 @@ fee_report_product_provider = FeeReportDocumentProvider(
     amazon_report_document_provider=report_document_provider,
     amazon_report_product_converter=FeeReportConverter(),
 )
+reserved_report_product_provider = ReservedReportProductProvider(
+    # for test ReservedReportProductProviderFromFile, from amazon ReservedReportProductProvider
+    amazon_request_sender=amazon_request_sender,
+    amazon_report_document_provider=report_document_provider,
+    amazon_report_product_converter=ReservedReportConverter(),
+)
 
 inventory_collector = AmazonReportsProductsCollector(
     amazon_report_document_product_provider=inventory_report_document_product_provider,
@@ -83,6 +92,9 @@ vendor_sales_collector = AmazonReportsProductsCollector(
 )
 fee_collector = AmazonReportsProductsCollector(
     amazon_report_document_product_provider=fee_report_product_provider,
+)
+reserved_collector = AmazonReportsProductsCollector(
+    amazon_report_document_product_provider=reserved_report_product_provider,
 )
 
 product_provider = AmazonProductProvider(
@@ -103,6 +115,7 @@ use_case = CollectProductsAndSendToAirtableUseCase(
     sales_collector=sales_collector,
     vendor_sales_collector=vendor_sales_collector,
     fee_collector=fee_collector,
+    reserved_collector=reserved_collector,
     product_collector=product_collector,
     airtable_product_sender=airtable_product_sender,
     amazon_products_records_builder=amazon_products_records_builder,

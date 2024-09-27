@@ -4,6 +4,7 @@ from src.application.amazon.pages.dto.product import AmazonPageProduct
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     FeeAmazonProduct,
+    ReservedProduct,
     SaleReportProduct,
     VendorSaleProduct,
 )
@@ -66,6 +67,15 @@ class MainTableRecordsBuilder:
                 marketplace_country=fee_product.marketplace_country,
             )
             record.fba_fee = fee_product.fba_fee
+
+    def add_reserved_data(self, items: list[ReservedProduct]) -> None:
+        for reserved_item in items:
+            record = self.__get_record(
+                asin=reserved_item.asin,
+                sku=reserved_item.sku,
+                marketplace_country=reserved_item.marketplace_country,
+            )
+            record.fc_transfer = reserved_item.fc_transfer
 
     def get_unique_asins_geo_pairs(self) -> list[tuple[str, MarketplaceCountry]]:
         result = []
