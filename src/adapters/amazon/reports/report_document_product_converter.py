@@ -110,7 +110,7 @@ class ReservedReportConverter(IReservedReportConverter):
                 asin=row['asin'],
                 sku=row['sku'],
                 marketplace_country=marketplace_country,
-                fc_transfer=row['reserved_fc-transfers'],
+                fc_transfer=int(row['reserved_fc-transfers']),
             )
             products.append(product)
         return products
