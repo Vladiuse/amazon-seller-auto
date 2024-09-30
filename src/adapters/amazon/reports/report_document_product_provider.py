@@ -1,4 +1,5 @@
 import gzip
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
@@ -9,6 +10,7 @@ from src.application.amazon.common.types import MarketplaceCountry
 from src.application.amazon.reports.dto.product import (
     AmazonInventoryReportProduct,
     FeeAmazonProduct,
+    ReservedProduct,
     SaleReportProduct,
     VendorSaleProduct,
 )
@@ -19,12 +21,14 @@ from src.application.amazon.reports.interfaces.report_documents_provider import 
 from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
+    IReservedReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
 )
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import read_amazon_report, save_amazon_report
 from src.main.config import config
+from src.main.exceptions import ReportStatusError
 
 amazon_seller_credentials = {
     'refresh_token': config.amazon_config.SELLER_SP_API_REFRESH_TOKEN,
@@ -203,3 +207,50 @@ class FeeReportProviderFromFile(IAmazonReportDocumentProductProvider):
             file_format='csv',
         )
         return self.amazon_report_product_converter.convert(report_document_text=report_document_text)
+
+@dataclass
+class ReservedReportProductProvider(IAmazonReportDocumentProductProvider):
+    amazon_request_sender: IAmazonRequestSender
+    amazon_report_document_provider: IAmazonReportProvider
+    amazon_report_product_converter:  IReservedReportConverter
+
+    def provide(self, marketplace_country: MarketplaceCountry) -> list[ReservedProduct]:
+        report_type = ReportType.RESERVED
+        try:
+            report_document = self.amazon_report_document_provider.provide(
+                marketplace_country=marketplace_country,
+                report_type=report_type,
+                credentials=amazon_seller_credentials,
+            )
+        except ReportStatusError:  # amazon have limits, need wait more than hour
+            logging.error('ReportStatusError: %s %s', marketplace_country, report_type)
+            return []
+        report_document_content = self.amazon_request_sender.get(report_document.url)
+        report_document_text = report_document_content.decode('utf-8')
+        save_amazon_report(
+            report_document_text=report_document_text,
+            marketplace_country=marketplace_country,
+            report_type=report_type,
+            output_file_format='csv',
+        )
+        return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                            marketplace_country=marketplace_country)
+
+
+@dataclass
+class ReservedReportProductProviderFromFile(IAmazonReportDocumentProductProvider):
+    amazon_report_product_converter: IReservedReportConverter
+
+    def provide(self, marketplace_country: MarketplaceCountry) -> list[ReservedProduct]:
+        report_type = ReportType.RESERVED
+        try:
+            report_document_text = read_amazon_report(
+                report_type=report_type,
+                marketplace_country=marketplace_country,
+                file_format='csv',
+            )
+            return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
+                                                                marketplace_country=marketplace_country)
+        except FileNotFoundError:
+            logging.error('ReportStatusError: %s %s', marketplace_country, report_type)
+            return []
