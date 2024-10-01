@@ -17,6 +17,7 @@ class CollectProductsAndSendToAirtableUseCase:
     vendor_sales_collector: IAmazonReportsProductsCollector
     fee_collector: IAmazonReportsProductsCollector
     reserved_collector: IAmazonReportsProductsCollector
+    sales_rank_collector: IAmazonReportsProductsCollector
     product_collector: IAmazonProductsCollector
     airtable_product_sender: IAirTableProductSender
     amazon_products_records_builder: MainTableRecordsBuilder
@@ -28,14 +29,17 @@ class CollectProductsAndSendToAirtableUseCase:
         sales_products = self.sales_collector.collects(marketplace_countries=marketplace_countries)
         fee_products = self.fee_collector.collects(marketplace_countries=[MarketplaceCountry.IT, ])
         reserved_products = self.reserved_collector.collects(marketplace_countries=marketplace_countries)
+        sales_rank_products = self.sales_rank_collector.collects(marketplace_countries=marketplace_countries)
         logging.info('inventory_products: %s', len(inventory_products))
         logging.info('sales_products: %s', len(sales_products))
         logging.info('fee_products: %s', len(fee_products))
         logging.info('reserved_products: %s', len(reserved_products))
+        logging.info('sales_rank_products: %s', len(sales_rank_products))
         self.amazon_products_records_builder.add_inventory_data(items=inventory_products)
         self.amazon_products_records_builder.add_sales_data(items=sales_products)
         self.amazon_products_records_builder.add_fee_data(items=fee_products)
         self.amazon_products_records_builder.add_reserved_data(items=reserved_products)
+        self.amazon_products_records_builder.add_sales_rank_data(items=sales_rank_products)
         unique_asins_geo_pairs = self.amazon_products_records_builder.get_unique_asins_geo_pairs()
         logging.info('unique_asins_geo_pairs: %s', len(unique_asins_geo_pairs))
         products_from_pars = self.product_collector.collect(items=unique_asins_geo_pairs)

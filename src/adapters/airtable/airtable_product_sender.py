@@ -23,6 +23,7 @@ class AirTableProductSender(IAirTableProductSender):
                 units_ordered=product.units_ordered,
                 fba_fee=product.fba_fee,
                 fc_transfer=product.fc_transfer,
+                sales_rank=product.sales_rank,
             )
             products_to_send.append(product_to_send)
         AmazonProductTable.batch_save(products_to_send)

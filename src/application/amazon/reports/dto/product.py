@@ -48,3 +48,11 @@ class ReservedProduct(AmazonReportProduct):
     sku: str
     marketplace_country: MarketplaceCountry
     fc_transfer: int
+
+
+@dataclass
+class SalesRankProduct:
+    asin: str
+    sku: str
+    marketplace_country: MarketplaceCountry
+    sales_rank: int | None

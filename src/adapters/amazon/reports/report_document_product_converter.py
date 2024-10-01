@@ -11,6 +11,7 @@ from src.application.amazon.reports.dto.product import (
     ReservedProduct,
     SaleReportProduct,
     VendorSaleProduct,
+    SalesRankProduct,
 )
 from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
@@ -18,6 +19,7 @@ from src.application.amazon.reports.interfaces.report_product_converter import (
     IReservedReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
+    ISalesRankReportConvertor,
 )
 
 
@@ -114,3 +116,20 @@ class ReservedReportConverter(IReservedReportConverter):
             )
             products.append(product)
         return products
+
+
+class SalesRankReportConvertor(ISalesRankReportConvertor):
+
+    def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[SalesRankProduct]:
+        sales_rank_products = []
+        reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
+        for row in reader:
+            sales_rank = None if row['sales-rank'] == '' else int(row['sales-rank'])
+            product = SalesRankProduct(
+                asin=row['asin'],
+                sku=row['sku'],
+                marketplace_country=marketplace_country,
+                sales_rank=sales_rank,
+            )
+            sales_rank_products.append(product)
+        return sales_rank_products

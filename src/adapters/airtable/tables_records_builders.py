@@ -6,6 +6,7 @@ from src.application.amazon.reports.dto.product import (
     FeeAmazonProduct,
     ReservedProduct,
     SaleReportProduct,
+    SalesRankProduct,
     VendorSaleProduct,
 )
 
@@ -76,6 +77,15 @@ class MainTableRecordsBuilder:
                 marketplace_country=reserved_item.marketplace_country,
             )
             record.fc_transfer = reserved_item.fc_transfer
+
+    def add_sales_rank_data(self, items: list[SalesRankProduct]) -> None:
+        for sales_rank_item in items:
+            record = self.__get_record(
+                asin=sales_rank_item.asin,
+                sku=sales_rank_item.sku,
+                marketplace_country=sales_rank_item.marketplace_country,
+            )
+            record.sales_rank = sales_rank_item.sales_rank
 
     def get_unique_asins_geo_pairs(self) -> list[tuple[str, MarketplaceCountry]]:
         result = []
