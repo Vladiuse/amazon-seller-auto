@@ -47,7 +47,7 @@ class IReservedReportConverter(ABC):
         raise NotImplementedError
 
 
-class ISalesRankReportConvertor(ABC):
+class ISalesRankReportConverter(ABC):
     @abstractmethod
     def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[SalesRankProduct]:
         raise NotImplementedError

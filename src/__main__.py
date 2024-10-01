@@ -13,7 +13,7 @@ from src.adapters.amazon.reports.report_document_product_converter import (
     VendorSalesReportConverter,
     ReservedReportConverter,
     FeeReportConverter,
-    SalesRankReportConvertor,
+    SalesRankReportConverter,
 )
 from src.adapters.amazon.reports.report_document_product_provider import (
     AmazonInventoryReportDocumentProductProvider,
@@ -87,7 +87,7 @@ sales_rank_report_product_provider = SalesRankReportProductProvider(
     # for test SalesRankReportProductProviderFromFile, from amazon SalesRankReportProductProvider
     amazon_request_sender=amazon_request_sender,
     amazon_report_document_provider=report_document_provider,
-    amazon_report_product_converter=SalesRankReportConvertor(),
+    amazon_report_product_converter=SalesRankReportConverter(),
 )
 
 inventory_collector = AmazonReportsProductsCollector(

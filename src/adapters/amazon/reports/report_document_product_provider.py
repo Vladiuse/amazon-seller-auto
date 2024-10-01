@@ -23,7 +23,7 @@ from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
     IReservedReportConverter,
-    ISalesRankReportConvertor,
+    ISalesRankReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
 )
@@ -263,7 +263,7 @@ class ReservedReportProductProviderFromFile(IAmazonReportDocumentProductProvider
 class SalesRankReportProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
-    amazon_report_product_converter: ISalesRankReportConvertor
+    amazon_report_product_converter: ISalesRankReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SalesRankProduct]:
         report_type = ReportType.SALES_RANK
@@ -290,7 +290,7 @@ class SalesRankReportProductProvider(IAmazonReportDocumentProductProvider):
 
 @dataclass
 class SalesRankReportProductProviderFromFile(IAmazonReportDocumentProductProvider):
-    amazon_report_product_converter: ISalesRankReportConvertor
+    amazon_report_product_converter: ISalesRankReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[SalesRankProduct]:
         report_type = ReportType.SALES_RANK

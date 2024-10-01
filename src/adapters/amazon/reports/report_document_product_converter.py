@@ -17,7 +17,7 @@ from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
     IReservedReportConverter,
-    ISalesRankReportConvertor,
+    ISalesRankReportConverter,
     ISalesReportConverter,
     IVendorSalesReportConverter,
 )
@@ -118,13 +118,13 @@ class ReservedReportConverter(IReservedReportConverter):
         return products
 
 
-class SalesRankReportConvertor(ISalesRankReportConvertor):
+class SalesRankReportConverter(ISalesRankReportConverter):
 
     def convert(self, report_document_text: str, marketplace_country: MarketplaceCountry) -> list[SalesRankProduct]:
         sales_rank_products = []
         reader = csv.DictReader(io.StringIO(report_document_text), delimiter='\t')
         for row in reader:
-            sales_rank = None if row['sales-rank'] == '' else int(row['sales-rank'])
+            sales_rank = int(row['sales-rank']) if row['sales-rank'] != '' else None
             product = SalesRankProduct(
                 asin=row['asin'],
                 sku=row['sku'],
