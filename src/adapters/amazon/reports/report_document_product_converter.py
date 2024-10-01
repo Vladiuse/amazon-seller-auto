@@ -10,16 +10,16 @@ from src.application.amazon.reports.dto.product import (
     FeeAmazonProduct,
     ReservedProduct,
     SaleReportProduct,
-    VendorSaleProduct,
     SalesRankProduct,
+    VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
     IReservedReportConverter,
+    ISalesRankReportConvertor,
     ISalesReportConverter,
     IVendorSalesReportConverter,
-    ISalesRankReportConvertor,
 )
 
 

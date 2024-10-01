@@ -12,8 +12,8 @@ from src.application.amazon.reports.dto.product import (
     FeeAmazonProduct,
     ReservedProduct,
     SaleReportProduct,
-    VendorSaleProduct,
     SalesRankProduct,
+    VendorSaleProduct,
 )
 from src.application.amazon.reports.interfaces.report_document_product_provider import (
     IAmazonReportDocumentProductProvider,
@@ -23,9 +23,9 @@ from src.application.amazon.reports.interfaces.report_product_converter import (
     IFeeReportConverter,
     IInventoryReportConverter,
     IReservedReportConverter,
+    ISalesRankReportConvertor,
     ISalesReportConverter,
     IVendorSalesReportConverter,
-    ISalesRankReportConvertor,
 )
 from src.application.amazon.reports.types import ReportType
 from src.application.amazon.utils import read_amazon_report, save_amazon_report
@@ -178,7 +178,7 @@ class VendorSalesReportProviderFromFile(IAmazonReportDocumentProductProvider):
 class FeeReportDocumentProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
-    amazon_report_product_converter: IFeeReportConverter 
+    amazon_report_product_converter: IFeeReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[FeeAmazonProduct]:
         report_type = ReportType.FEE
@@ -210,11 +210,12 @@ class FeeReportProviderFromFile(IAmazonReportDocumentProductProvider):
         )
         return self.amazon_report_product_converter.convert(report_document_text=report_document_text)
 
+
 @dataclass
 class ReservedReportProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
     amazon_report_document_provider: IAmazonReportProvider
-    amazon_report_product_converter:  IReservedReportConverter
+    amazon_report_product_converter: IReservedReportConverter
 
     def provide(self, marketplace_country: MarketplaceCountry) -> list[ReservedProduct]:
         report_type = ReportType.RESERVED
@@ -257,6 +258,7 @@ class ReservedReportProductProviderFromFile(IAmazonReportDocumentProductProvider
             logging.error('ReportStatusError: %s %s', marketplace_country, report_type)
             return []
 
+
 @dataclass
 class SalesRankReportProductProvider(IAmazonReportDocumentProductProvider):
     amazon_request_sender: IAmazonRequestSender
@@ -284,6 +286,7 @@ class SalesRankReportProductProvider(IAmazonReportDocumentProductProvider):
         )
         return self.amazon_report_product_converter.convert(report_document_text=report_document_text,
                                                             marketplace_country=marketplace_country)
+
 
 @dataclass
 class SalesRankReportProductProviderFromFile(IAmazonReportDocumentProductProvider):
