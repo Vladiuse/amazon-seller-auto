@@ -9,18 +9,23 @@ AMAZON_PRODUCT_PAGES_DIR = 'media/zen_pars'
 
 
 class AmazonConfig(BaseSettings):
-    SP_API_REFRESH_TOKEN: str
-    LWA_APP_ID: str
-    LWA_CLIENT_SECRET: str
-    LWA_CLIENT_ID: str
+    SELLER_SP_API_REFRESH_TOKEN: str
+    SELLER_LWA_CLIENT_SECRET: str
+    SELLER_LWA_CLIENT_ID: str
+
+    VENDOR_SP_API_REFRESH_TOKEN: str
+    VENDOR_LWA_CLIENT_SECRET: str
+    VENDOR_LWA_CLIENT_ID: str
+
+
     ENV_DISABLE_DONATION_MSG: int
 
 
 class AirTableConfig(BaseSettings):
     AIRTABLE_API_KEY: str
     AIRTABLE_APP_ID: str
-    AIRTABLE_TABLE_ID: str
-
+    AIRTABLE_MAIN_TABLE_ID: str
+    AIRTABLE_VENDOR_SALES_TABLE_ID: str
 
 class ZenRowConfig(BaseSettings):
     ZENROWS_API_KEY: str
