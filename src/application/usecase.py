@@ -1,0 +1,63 @@
+import logging
+from dataclasses import dataclass
+
+from src.adapters.airtable.tables.models import AmazonProductTable, AmazonVendorSalesTable
+from src.adapters.airtable.tables_records_builders import MainTableRecordsBuilder, VendorSalesRecordsBuilder
+from src.application.airtable_product_sender.interfaces.airtable_product_sender import IAirTableProductSender
+from src.application.amazon.common.types import MarketplaceCountry
+from src.application.amazon.pages.interfaces.product_collector import IAmazonProductsCollector
+from src.application.amazon.reports.interfaces.reports_procucts_collector import IAmazonReportsProductsCollector
+from src.application.amazon.utils import get_active_asins
+
+
+@dataclass
+class CollectProductsAndSendToAirtableUseCase:
+    inventory_collector: IAmazonReportsProductsCollector
+    sales_collector: IAmazonReportsProductsCollector
+    vendor_sales_collector: IAmazonReportsProductsCollector
+    fee_collector: IAmazonReportsProductsCollector
+    reserved_collector: IAmazonReportsProductsCollector
+    sales_rank_collector: IAmazonReportsProductsCollector
+    product_collector: IAmazonProductsCollector
+    airtable_product_sender: IAirTableProductSender
+    amazon_products_records_builder: MainTableRecordsBuilder
+    amazon_vendor_records_builder: VendorSalesRecordsBuilder
+
+    def collect_and_send(self, marketplace_countries: list[MarketplaceCountry]) -> None:
+        # Amazon Products Table
+        inventory_products = self.inventory_collector.collects(marketplace_countries=marketplace_countries)
+        sales_products = self.sales_collector.collects(marketplace_countries=marketplace_countries)
+        fee_products = self.fee_collector.collects(marketplace_countries=[MarketplaceCountry.IT, ])
+        reserved_products = self.reserved_collector.collects(marketplace_countries=marketplace_countries)
+        sales_rank_products = self.sales_rank_collector.collects(marketplace_countries=marketplace_countries)
+        logging.info('inventory_products: %s', len(inventory_products))
+        logging.info('sales_products: %s', len(sales_products))
+        logging.info('fee_products: %s', len(fee_products))
+        logging.info('reserved_products: %s', len(reserved_products))
+        logging.info('sales_rank_products: %s', len(sales_rank_products))
+        self.amazon_products_records_builder.add_inventory_data(items=inventory_products)
+        self.amazon_products_records_builder.add_sales_data(items=sales_products)
+        self.amazon_products_records_builder.add_fee_data(items=fee_products)
+        self.amazon_products_records_builder.add_reserved_data(items=reserved_products)
+        self.amazon_products_records_builder.add_sales_rank_data(items=sales_rank_products)
+        unique_asins_geo_pairs = self.amazon_products_records_builder.get_unique_asins_geo_pairs()
+        logging.info('unique_asins_geo_pairs: %s', len(unique_asins_geo_pairs))
+        products_from_pars = self.product_collector.collect(items=unique_asins_geo_pairs)
+        logging.info('products_from_pars: %s', len(products_from_pars))
+        self.amazon_products_records_builder.add_rating_data(items=products_from_pars)
+        active_asins = get_active_asins()
+        products_to_send = []
+        for record in self.amazon_products_records_builder.items.values():
+            if record.asin in active_asins:
+                products_to_send.append(record)
+        old_records_to_delete = AmazonProductTable.all()
+        AmazonProductTable.batch_delete(old_records_to_delete)
+        self.airtable_product_sender.send_products_to_table(products=products_to_send)
+
+        # Vendor Sales Table
+        vendor_products = self.vendor_sales_collector.collects(marketplace_countries=marketplace_countries)
+        self.amazon_vendor_records_builder.add_vendor_sales_data(items=vendor_products)
+        logging.info('vendor_products: %s', len(self.amazon_vendor_records_builder.items))
+        old_records_to_delete = AmazonVendorSalesTable.all()
+        AmazonVendorSalesTable.batch_delete(old_records_to_delete)
+        self.airtable_product_sender.send_vendor_sales_data(items=self.amazon_vendor_records_builder.items)
